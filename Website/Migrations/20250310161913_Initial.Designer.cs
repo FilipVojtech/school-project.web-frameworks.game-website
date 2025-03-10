@@ -12,8 +12,8 @@ using Website.Data;
 namespace Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250310123152_Reviews")]
-    partial class Reviews
+    [Migration("20250310161913_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,14 +229,14 @@ namespace Website.Migrations
 
             modelBuilder.Entity("Website.Models.Game", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
+                    b.Property<long>("GenreId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(255)
@@ -263,11 +263,11 @@ namespace Website.Migrations
 
             modelBuilder.Entity("Website.Models.Genre", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -286,16 +286,19 @@ namespace Website.Migrations
 
             modelBuilder.Entity("Website.Models.Review", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasMaxLength(2147483647)
                         .HasColumnType("text");
+
+                    b.Property<long>("GameId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -303,6 +306,8 @@ namespace Website.Migrations
                         .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GameId");
 
                     b.ToTable("Reviews");
                 });
@@ -367,6 +372,22 @@ namespace Website.Migrations
                         .IsRequired();
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("Website.Models.Review", b =>
+                {
+                    b.HasOne("Website.Models.Game", "Game")
+                        .WithMany("Reviews")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Website.Models.Game", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
