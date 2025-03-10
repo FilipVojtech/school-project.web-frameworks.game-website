@@ -13,4 +13,7 @@ public class Review
     [Column(TypeName = "text")]
     [StringLength(int.MaxValue)]
     public string Body { get; set; }
+
+    [Required]
+    public Game Game { get; set; }
 }

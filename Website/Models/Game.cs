@@ -23,4 +23,6 @@ public class Game
 
     [Required]
     public Genre? Genre { get; set; } = null;
+
+    public virtual ICollection<Review> Reviews { get; set; } = [];
 }
