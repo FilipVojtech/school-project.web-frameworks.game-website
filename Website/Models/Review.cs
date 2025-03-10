@@ -5,7 +5,7 @@ namespace Website.Models;
 
 public class Review
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [StringLength(40)]
     public string Title { get; set; }

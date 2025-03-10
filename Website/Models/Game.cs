@@ -4,7 +4,7 @@ namespace Website.Models;
 
 public class Game
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [StringLength(80)]
     [Required]
