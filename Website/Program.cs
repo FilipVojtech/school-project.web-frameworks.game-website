@@ -1,3 +1,4 @@
+using IGDB;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
@@ -20,6 +21,15 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddSingleton<IGDBClient>(_ =>
+        {
+            var clientId = builder.Configuration["twitch:clientId"] ??
+                           throw new InvalidOperationException("Could not get Twitch Client ID.");
+            var clientSecret = builder.Configuration["twitch:clientSecret"] ??
+                               throw new InvalidOperationException("Could not get Twitch Client Secret");
+            return new IGDBClient(clientId, clientSecret);
+        });
 
         var app = builder.Build();
 
