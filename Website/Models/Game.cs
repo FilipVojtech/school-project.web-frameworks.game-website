@@ -4,11 +4,25 @@ namespace Website.Models;
 
 public class Game
 {
+    public Game()
+    {
+    }
+
+    public Game(IGDB.Models.Game igdbGame)
+    {
+        Id = igdbGame.Id ?? throw new MissingFieldException($"Property Id missing on {nameof(igdbGame)}");
+        Name = igdbGame.Name;
+        Url = igdbGame.Url;
+        ImageUrl = igdbGame.Cover.Value.Url;
+        ReleaseDate = igdbGame.FirstReleaseDate?.DateTime ?? throw new MissingFieldException($"Property ReleaseDate missing on {nameof(igdbGame)}");
+        Genres = igdbGame.Genres.Values.Select(g => new Genre(g)).ToList();
+    }
+
     public long Id { get; set; }
 
     [StringLength(80)]
     [Required]
-    public required string Name { get; set; } = "";
+    public string Name { get; set; }
 
     [DataType(DataType.Url)]
     [StringLength(255)]
@@ -22,7 +36,7 @@ public class Game
     public DateTime ReleaseDate { get; set; }
 
     [Required]
-    public Genre? Genre { get; set; } = null;
+    public ICollection<Genre> Genres { get; set; } = [];
 
     public virtual ICollection<Review> Reviews { get; set; } = [];
 }
