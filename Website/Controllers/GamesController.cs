@@ -10,32 +10,33 @@ namespace Website.Controllers;
 [Route("[controller]")]
 public class GamesController(IGDBClient igdb, ApplicationDbContext context) : Controller
 {
-    private readonly IGDBClient _igdb = igdb;
-
     private readonly ApplicationDbContext _context = context;
 
     // GET
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? query)
     {
-        var model = new GamesViewModel();
+        if (string.IsNullOrEmpty(query))
+        {
+            var model = new GamesViewModel();
 
-        return View(model);
-    }
+            return View(model);
+        }
+        else
+        {
+            var model = new SearchGamesViewModel();
+            ICollection<Game> games = await _context.Games
+                .AsNoTracking()
+                .Where(g => EF.Functions.Like(g.Name, $"%{query}%"))
+                .OrderBy(g => g.Name)
+                .Take(20)
+                .ToListAsync();
 
-    public async Task<IActionResult> SearchGames(string query)
-    {
-        var model = new SearchGamesViewModel();
-        ICollection<Game> games = await _context.Games
-            .AsNoTracking()
-            .Where(g => g.Name.Contains(query))
-            .Take(20)
-            .ToListAsync();
+            model.Query = query;
+            model.SearchResults = games;
 
-        model.Query = query;
-        model.SearchResults = games;
-
-        return View(model);
+            return View("SearchGames", model);
+        }
     }
 
     // GET: /Games/{id}
