@@ -1,0 +1,14 @@
+@model Game
+
+<div class="game-card card w-100 mb-2">
+    <div class="row flex-nowrap g-1">
+        <div class="col-auto">
+            <img src="@Model.ImageUrl" alt="@Model.Name cover art" class="game-card__image rounded-start">
+        </div>
+        <div class="col-8">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Name</h5>
+            </div>
+        </div>
+    </div>
+</div>
