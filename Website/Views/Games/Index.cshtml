@@ -1,10 +1,11 @@
+@model Website.Models.ViewModels.GamesViewModel;
 @{
     ViewData["Title"] = "Games";
 }
 
 <div>
     <h1>Games Page</h1>
-    <form action="">
+    <form action="" class="mb-2">
         <div class="input-group">
             <div class="form-floating">
                 <input type="search" name="query" id="query" class="form-control" placeholder="">
@@ -13,4 +14,11 @@
             <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
         </div>
     </form>
+
+    @foreach (var game in Model.Games)
+    {
+        <a asp-controller="Games" asp-action="ViewGame" asp-route-id="@game.Id" class="link-underline link-underline-opacity-0">
+            @(await Html.PartialAsync("Components/GameCard", game))
+        </a>
+    }
 </div>
