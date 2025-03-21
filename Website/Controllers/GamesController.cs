@@ -28,6 +28,7 @@ public class GamesController(IGDBClient igdb, ApplicationDbContext context) : Co
             ICollection<Game> games = await _context.Games
                 .AsNoTracking()
                 .Where(g => EF.Functions.Like(g.Name, $"%{query}%"))
+                .Include(g => g.Genres)
                 .OrderBy(g => g.Name)
                 .Take(20)
                 .ToListAsync();
