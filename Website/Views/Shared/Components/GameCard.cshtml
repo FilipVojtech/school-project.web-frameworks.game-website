@@ -8,6 +8,14 @@
         <div class="col-8">
             <div class="card-body">
                 <h5 class="card-title">@Model.Name</h5>
+                <div class="card-text">
+                    <div class="game-card__genres">
+                        @foreach (var genre in Model.Genres)
+                        {
+                            <span>@genre.Name</span>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
