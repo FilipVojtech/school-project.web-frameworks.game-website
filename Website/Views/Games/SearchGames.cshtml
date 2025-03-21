@@ -15,7 +15,7 @@
         </div>
     </form>
     <h4 class="mt-4 mb-2">Results</h4>
-    @if (Model.SearchResults is { Count: > 1 })
+    @if (Model.SearchResults is { Count: > 0 })
     {
         foreach (var game in Model.SearchResults)
         {
