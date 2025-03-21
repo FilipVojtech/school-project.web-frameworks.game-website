@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@review.Title</h5>
                         <p class="card-text">@review.Body</p>
-                        <a href="#" class="btn btn-primary">@review.Game.Name</a>
+                        <a asp-controller="Games" asp-action="ViewGame" asp-route-id="@review.Game.Id" class="btn btn-primary">@review.Game.Name</a>
                     </div>
                 </div>
             }
