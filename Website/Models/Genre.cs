@@ -24,4 +24,6 @@ public class Genre
     [StringLength(80)]
     [Required]
     public string Slug { get; set; } = "";
+
+    public virtual ICollection<Game> Games { get; set; } = [];
 }
