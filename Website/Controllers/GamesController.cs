@@ -18,7 +18,15 @@ public class GamesController(IGDBClient igdb, ApplicationDbContext context) : Co
     {
         if (string.IsNullOrEmpty(query))
         {
-            var model = new GamesViewModel();
+            var model = new GamesViewModel
+            {
+                Games = await _context.Games
+                    .AsNoTracking()
+                    .OrderBy(g => g.Name)
+                    .Include(g => g.Genres)
+                    .Take(20)
+                    .ToListAsync()
+            };
 
             return View(model);
         }
