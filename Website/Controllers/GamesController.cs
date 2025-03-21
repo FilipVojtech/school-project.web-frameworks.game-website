@@ -35,7 +35,7 @@ public class GamesController(IGDBClient igdb, ApplicationDbContext context) : Co
         model.Query = query;
         model.SearchResults = games;
 
-        return View("SearchResults", model);
+        return View(model);
     }
 
     // GET: /Games/{id}
