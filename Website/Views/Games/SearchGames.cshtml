@@ -20,7 +20,7 @@
         foreach (var game in Model.SearchResults)
         {
             <a asp-controller="Games" asp-action="ViewGame" asp-route-id="@game.Id" class="link-underline link-underline-opacity-0">
-                @(await Html.PartialAsync("Components/GameCard", game))
+                <partial name="Components/GameCard" model="game"/>
             </a>
         }
     }
