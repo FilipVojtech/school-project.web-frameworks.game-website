@@ -16,4 +16,8 @@ public class Review
 
     [Required]
     public Game Game { get; set; }
+
+    [Required]
+    [Range(0, 10)]
+    public int Rating { get; set; }
 }
