@@ -27,14 +27,15 @@ public class Program
             mvcBuilder.AddRazorRuntimeCompilation();
         }
 
-        builder.Services.AddSingleton<IGDBClient>(_ =>
-        {
-            var clientId = builder.Configuration["twitch:clientId"] ??
-                           throw new InvalidOperationException("Could not get Twitch Client ID.");
-            var clientSecret = builder.Configuration["twitch:clientSecret"] ??
-                               throw new InvalidOperationException("Could not get Twitch Client Secret");
-            return new IGDBClient(clientId, clientSecret);
-        });
+        // IGDB Client
+        // builder.Services.AddSingleton<IGDBClient>(_ =>
+        // {
+        //     var clientId = builder.Configuration["twitch:clientId"] ??
+        //                    throw new InvalidOperationException("Could not get Twitch Client ID.");
+        //     var clientSecret = builder.Configuration["twitch:clientSecret"] ??
+        //                        throw new InvalidOperationException("Could not get Twitch Client Secret");
+        //     return new IGDBClient(clientId, clientSecret);
+        // });
 
         var app = builder.Build();
 

@@ -8,15 +8,15 @@ public class Game
     {
     }
 
-    public Game(IGDB.Models.Game igdbGame)
-    {
-        Id = igdbGame.Id ?? throw new MissingFieldException($"Property Id missing on {nameof(igdbGame)}");
-        Name = igdbGame.Name;
-        Url = igdbGame.Url;
-        ImageUrl = igdbGame.Cover.Value.Url;
-        ReleaseDate = igdbGame.FirstReleaseDate?.DateTime ?? throw new MissingFieldException($"Property ReleaseDate missing on {nameof(igdbGame)}");
-        Genres = igdbGame.Genres.Values.Select(g => new Genre(g)).ToList();
-    }
+    // public Game(IGDB.Models.Game igdbGame)
+    // {
+    //     Id = igdbGame.Id ?? throw new MissingFieldException($"Property Id missing on {nameof(igdbGame)}");
+    //     Name = igdbGame.Name;
+    //     Url = igdbGame.Url;
+    //     ImageUrl = igdbGame.Cover.Value.Url;
+    //     ReleaseDate = igdbGame.FirstReleaseDate?.DateTime ?? throw new MissingFieldException($"Property ReleaseDate missing on {nameof(igdbGame)}");
+    //     Genres = igdbGame.Genres.Values.Select(g => new Genre(g)).ToList();
+    // }
 
     public long Id { get; set; }
 

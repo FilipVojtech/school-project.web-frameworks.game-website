@@ -1,4 +1,3 @@
-using IGDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
@@ -8,7 +7,7 @@ using Game = Website.Models.Game;
 namespace Website.Controllers;
 
 [Route("[controller]")]
-public class GamesController(IGDBClient igdb, ApplicationDbContext context) : Controller
+public class GamesController(ApplicationDbContext context) : Controller
 {
     private readonly ApplicationDbContext _context = context;
 

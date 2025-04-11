@@ -8,12 +8,12 @@ public class Genre
     {
     }
 
-    public Genre(IGDB.Models.Genre igdbGenre)
-    {
-        Id = igdbGenre.Id ?? throw new ArgumentException($"Property Id missing on {nameof(igdbGenre)}");
-        Name = igdbGenre.Name;
-        Slug = igdbGenre.Slug;
-    }
+    // public Genre(IGDB.Models.Genre igdbGenre)
+    // {
+    //     Id = igdbGenre.Id ?? throw new ArgumentException($"Property Id missing on {nameof(igdbGenre)}");
+    //     Name = igdbGenre.Name;
+    //     Slug = igdbGenre.Slug;
+    // }
 
     public long Id { get; set; }
 
