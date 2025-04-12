@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
+using Website.Models;
 
 namespace Website;
 
@@ -20,7 +21,7 @@ public class Program
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         builder.Services.AddAuthentication()
