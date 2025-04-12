@@ -39,4 +39,12 @@ public class Game
     public virtual ICollection<Genre> Genres { get; set; } = [];
 
     public virtual ICollection<Review> Reviews { get; set; } = [];
+
+    public double? AverageRating() =>
+        Reviews.Count switch
+        {
+            0 => null,
+            1 => Reviews.First().Rating,
+            _ => Reviews.Average(review => review.Rating)
+        };
 }

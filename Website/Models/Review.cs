@@ -8,10 +8,11 @@ public class Review
     public long Id { get; set; }
 
     [StringLength(40)]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     [Column(TypeName = "text")]
     [StringLength(int.MaxValue)]
+    [Required]
     public string Body { get; set; }
 
     [Required]
@@ -20,4 +21,7 @@ public class Review
     [Required]
     [Range(0, 10)]
     public int Rating { get; set; }
+
+    [Required]
+    public User Author { get; set; }
 }
