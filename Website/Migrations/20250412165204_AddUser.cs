@@ -24,16 +24,7 @@ namespace Website.Migrations
                 name: "AuthorId",
                 table: "Reviews",
                 type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "AspNetUsers",
-                type: "nvarchar(13)",
-                maxLength: 13,
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_AuthorId",
@@ -45,8 +36,7 @@ namespace Website.Migrations
                 table: "Reviews",
                 column: "AuthorId",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -63,10 +53,6 @@ namespace Website.Migrations
             migrationBuilder.DropColumn(
                 name: "AuthorId",
                 table: "Reviews");
-
-            migrationBuilder.DropColumn(
-                name: "Discriminator",
-                table: "AspNetUsers");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Title",

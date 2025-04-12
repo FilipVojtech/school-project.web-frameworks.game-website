@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Website.Models;
 
@@ -22,6 +23,6 @@ public class Review
     [Range(0, 10)]
     public int Rating { get; set; }
 
-    [Required]
-    public User Author { get; set; }
+    [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+    public User? Author { get; set; }
 }
