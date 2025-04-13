@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
 using Website.Models.ViewModels;
-using Game = Website.Models.Game;
 
 namespace Website.Controllers;
 
@@ -15,36 +14,28 @@ public class GamesController(ApplicationDbContext context) : Controller
     [HttpGet]
     public async Task<IActionResult> Index(string? query)
     {
+        var model = new GamesViewModel { Query = query };
         if (string.IsNullOrEmpty(query))
         {
-            var model = new GamesViewModel
-            {
-                Games = await _context.Games
-                    .AsNoTracking()
-                    .OrderBy(g => g.Name)
-                    .Include(g => g.Genres)
-                    .Take(20)
-                    .ToListAsync()
-            };
-
-            return View(model);
+            model.Games = await _context.Games
+                .AsNoTracking()
+                .OrderBy(g => g.Name)
+                .Include(g => g.Genres)
+                .Take(20)
+                .ToListAsync();
         }
         else
         {
-            var model = new SearchGamesViewModel();
-            ICollection<Game> games = await _context.Games
+            model.Games = await _context.Games
                 .AsNoTracking()
                 .Where(g => EF.Functions.Like(g.Name, $"%{query}%"))
                 .Include(g => g.Genres)
                 .OrderBy(g => g.Name)
                 .Take(20)
                 .ToListAsync();
-
-            model.Query = query;
-            model.SearchResults = games;
-
-            return View("SearchGames", model);
         }
+
+        return View(model);
     }
 
     // GET: /Games/{id}
