@@ -12,13 +12,6 @@
             foreach (var review in Model.Reviews)
             {
                 <partial name="Components/ReviewCard" model="review"/>
-                <div class="card w-100 mb-2" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">@review.Title</h5>
-                        <p class="card-text">@review.Body</p>
-                        <a asp-controller="Games" asp-action="ViewGame" asp-route-id="@review.Game.Id" class="btn btn-primary">@review.Game.Name</a>
-                    </div>
-                </div>
             }
         }
         else
