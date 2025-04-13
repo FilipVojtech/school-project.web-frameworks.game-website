@@ -2,9 +2,44 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    var avgRating = Model.AverageRating();
 }
 
 <div>
-    <h1>View Game</h1>
-    @Model.Name
+    <div id="game-section" class="d-flex flex-column flex-md-row flex-nowrap">
+        <img id="cover" class="col-4 rounded-2 align-self-center" src="@Model.ImageUrl" alt="@Model.Name cover art">
+        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8">
+            <h2 class="mb-0">@Model.Name</h2>
+            <h4>
+                @if (avgRating != null)
+                {
+                    @($"{avgRating:F2}")
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span class="text-body-tertiary">(@Model.Reviews.Count @(Model.Reviews.Count > 1 ? "reviews" : "review"))</span>
+                }
+                else
+                {
+                    <span class="text-body-tertiary">No ratings</span>
+                }
+            </h4>
+        </div>
+    </div>
+    <div id="reviews-section" class="mt-4">
+        <h3>Reviews</h3>
+        @if (Model.Reviews.Count > 0)
+        {
+            foreach (var review in Model.Reviews)
+            {
+                <partial
+                    name="Components/ReviewCard"
+                    model="review"
+                    view-data="@(new ViewDataDictionary(this.ViewData) { { "displayGame", false } })"
+                />
+            }
+        }
+        else
+        {
+            <h5>No reviews</h5>
+        }
+    </div>
 </div>
