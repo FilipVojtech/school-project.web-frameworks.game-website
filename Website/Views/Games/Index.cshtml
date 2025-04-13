@@ -4,21 +4,46 @@
 }
 
 <div>
-    <h1>Games Page</h1>
-    <form action="" class="mb-2">
+    <form action="" class="mb-2" id="searchForm">
         <div class="input-group">
             <div class="form-floating">
-                <input type="search" name="query" id="query" class="form-control" placeholder="">
-                <label for="query">Search Games</label>
+                @Html.TextBoxFor(
+                    model => model.Query,
+                    string.Empty,
+                    new { type = "search", @class = "form-control", placeholder = "", id = "queryInput" }
+                )
+                @Html.LabelFor(m => m.Query, "Search Games")
             </div>
+            <button type="button" class="btn btn-secondary" onclick="clearSearch()"><i class="bi bi-x-lg"></i></button>
             <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
         </div>
     </form>
 
     @foreach (var game in Model.Games)
     {
-        <a asp-controller="Games" asp-action="ViewGame" asp-route-id="@game.Id" class="link-underline link-underline-opacity-0">
-            @(await Html.PartialAsync("Components/GameCard", game))
+        <a
+            asp-controller="Games"
+            asp-action="ViewGame"
+            asp-route-id="@game.Id"
+            class="link-underline link-underline-opacity-0"
+        >
+            <partial name="Components/GameCard" model="game"/>
         </a>
     }
 </div>
+
+@section Scripts
+{
+    <script>
+        const searchForm = $("#searchForm");
+        const queryInput = $("#queryInput");
+
+        function clearSearch() {
+            if (queryInput.val() === "")
+                return;
+            queryInput.val("");
+            searchForm.submit();
+        }
+    </script>
+}
+
