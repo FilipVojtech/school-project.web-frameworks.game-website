@@ -47,6 +47,7 @@ public class GamesController(ApplicationDbContext context) : Controller
         var game = await _context.Games
             .AsNoTracking()
             .Include(g => g.Reviews)
+            .ThenInclude(g => g.Author)
             .FirstOrDefaultAsync(g => g.Id == id);
 
         if (game == null)
