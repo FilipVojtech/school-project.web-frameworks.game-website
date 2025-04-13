@@ -1,16 +1,22 @@
 @model Review
+@{
+    var displayGame = (bool?)ViewData["displayGame"] ?? true;
+}
 
 <div class="card w-100 mb-2" style="width: 18rem;">
     <div class="card-header">
-        <a
-            asp-controller="Games"
-            asp-action="ViewGame"
-            asp-route-id="@Model.Game.Id"
-            class="link-underline link-underline-opacity-0 text-body"
-        >
-            @Model.Game.Name
-            <i class="bi bi-chevron-right"></i>
-        </a>
+        @if (displayGame)
+        {
+            <a
+                asp-controller="Games"
+                asp-action="ViewGame"
+                asp-route-id="@Model.Game.Id"
+                class="link-underline link-underline-opacity-0 text-body"
+            >
+                @Model.Game.Name
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        }
         <div>
             <i class="bi bi-person-circle"></i>
             @(Model.Author?.UserName ?? "[Removed]")
