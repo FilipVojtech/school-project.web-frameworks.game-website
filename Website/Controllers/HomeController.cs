@@ -16,6 +16,7 @@ public class HomeController(ILogger<HomeController> logger, ApplicationDbContext
         var reviews = context.Reviews
             .AsNoTracking()
             .Include(r => r.Game)
+            .Include(r => r.Author)
             .Take(25)
             .ToList();
 
