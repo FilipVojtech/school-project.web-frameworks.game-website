@@ -11,6 +11,17 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/components.css" asp-append-version="true">
     <link rel="stylesheet" href="~/Website.styles.css" asp-append-version="true"/>
+    <style>
+        #nav-links {
+            border-radius: 100px;
+        }
+
+        @@media screen and (max-width: 576px) {
+            #nav-links {
+                border-radius: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
 <header class="sticky-top">
@@ -31,8 +42,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav mx-auto justify-content-center bg-dark p-1" style="border-radius: 22px">
-                    <li class="nav-item rounded-5 px-2 @Html.IsSelected("Home", "Index", "bg-primary")">
+                <ul class="navbar-nav mx-auto justify-content-center bg-dark p-1" id="nav-links">
+                    <li class="nav-item rounded-5 px-2 mb-2 mb-sm-0 @Html.IsSelected("Home", "Index", "bg-primary")">
                         <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item rounded-5 px-2 @Html.IsSelected("Games", "Index,Search", "bg-primary")">
