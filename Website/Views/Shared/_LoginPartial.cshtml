@@ -4,13 +4,31 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @User.Identity?.Name
+            </a>
+            <ul class="dropdown-menu" id="user-menu">
+                <li><a
+                        class="dropdown-item"
+                        asp-area="Identity"
+                        asp-page="/Account/Manage/Index"
+                        title="Manage Account"
+                    >Account</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <form
+                        class="form-inline"
+                        asp-area="Identity"
+                        asp-page="/Account/Logout"
+                        asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                    >
+                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                    </form>
+                </li>
+            </ul>
         </li>
     }
     else
@@ -23,3 +41,12 @@
         </li>
     }
 </ul>
+
+@***Translate user dropdown on desktop to not clip off-screen ***@
+<style>
+    @@media screen and (min-width: 576px) {
+        #user-menu {
+            translate: -50% 0;
+        }
+    }
+</style>
