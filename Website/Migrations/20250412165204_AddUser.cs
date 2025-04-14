@@ -36,7 +36,8 @@ namespace Website.Migrations
                 table: "Reviews",
                 column: "AuthorId",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />

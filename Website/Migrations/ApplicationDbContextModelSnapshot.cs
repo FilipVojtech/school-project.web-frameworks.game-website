@@ -34,7 +34,7 @@ namespace Website.Migrations
 
                     b.HasIndex("GenresId");
 
-                    b.ToTable("GameGenre");
+                    b.ToTable("GameGenre", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -200,7 +200,7 @@ namespace Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("Website.Models.Genre", b =>
@@ -223,7 +223,7 @@ namespace Website.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("Website.Models.Review", b =>
@@ -258,7 +258,7 @@ namespace Website.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Website.Models.User", b =>

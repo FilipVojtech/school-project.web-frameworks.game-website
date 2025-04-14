@@ -23,6 +23,6 @@ public class Review
     [Range(0, 10)]
     public int Rating { get; set; }
 
-    [DeleteBehavior(DeleteBehavior.ClientSetNull)]
+    [DeleteBehavior(DeleteBehavior.SetNull)]
     public User? Author { get; set; }
 }
