@@ -18,8 +18,7 @@
             <h4>
                 @if (avgRating != null)
                 {
-                    @($"{avgRating:F2}")
-                    <i class="bi bi-star-fill text-warning"></i>
+                    @($"Avg. {avgRating:F2}/10")
                     <span class="text-body-tertiary">(@Model.Game.Reviews.Count @(Model.Game.Reviews.Count > 1 ? "reviews" : "review"))</span>
                 }
                 else
