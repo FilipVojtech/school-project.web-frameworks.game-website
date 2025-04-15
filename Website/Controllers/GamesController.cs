@@ -15,6 +15,10 @@ public class GamesController(
 {
     private readonly ApplicationDbContext _context = context;
 
+    private readonly ILogger<GamesController> _logger = logger;
+
+    private readonly UserManager<User> _userManager = userManager;
+
     // GET
     [HttpGet]
     public async Task<IActionResult> Index(string? query)
@@ -68,5 +72,40 @@ public class GamesController(
         }
 
         return View(model);
+    }
+
+    // GET: /Games/{id}
+    [HttpPost("{id:int}")]
+    public async Task<IActionResult> PostReview(int id, AddReviewModel model)
+    {
+        var author = await _userManager.GetUserAsync(User);
+        if (author == null)
+        {
+            Unauthorized("Please log in to write reviews");
+        }
+
+        var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == id);
+
+        if (game == null)
+        {
+            return NotFound("Could not find this game");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(ViewGame), new { id = id, addReviewModel = model });
+        }
+
+        game.Reviews.Add(new Review
+        {
+            Author = author,
+            Title = model.Title,
+            Body = model.Body,
+            Rating = model.Rating,
+            Game = game
+        });
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(ViewGame), new { id = id });
     }
 }
