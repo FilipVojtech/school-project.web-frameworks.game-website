@@ -1,12 +1,17 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
+using Website.Models;
 using Website.Models.ViewModels;
 
 namespace Website.Controllers;
 
 [Route("[controller]")]
-public class GamesController(ApplicationDbContext context) : Controller
+public class GamesController(
+    ApplicationDbContext context,
+    ILogger<GamesController> logger,
+    UserManager<User> userManager) : Controller
 {
     private readonly ApplicationDbContext _context = context;
 
@@ -40,10 +45,9 @@ public class GamesController(ApplicationDbContext context) : Controller
 
     // GET: /Games/{id}
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> ViewGame(int? id)
+    public async Task<IActionResult> ViewGame(int id, AddReviewModel? addReviewModel = null)
     {
-        Console.WriteLine($"Game ID: {id}");
-
+        var model = new ViewGame();
         var game = await _context.Games
             .AsNoTracking()
             .Include(g => g.Reviews)
@@ -55,6 +59,14 @@ public class GamesController(ApplicationDbContext context) : Controller
             return NotFound("Could not find this game");
         }
 
-        return View(game);
+        model.Game = game;
+        model.AddReviewModel.GameId = game.Id;
+
+        if (addReviewModel != null && addReviewModel.GameId != 0)
+        {
+            model.AddReviewModel = addReviewModel;
+        }
+
+        return View(model);
     }
 }

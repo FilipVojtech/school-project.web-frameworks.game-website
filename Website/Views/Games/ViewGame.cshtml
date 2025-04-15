@@ -1,21 +1,26 @@
-@model Game
+@model ViewGame
 
 @{
-    ViewData["Title"] = Model.Name;
-    var avgRating = Model.AverageRating();
+    ViewData["Title"] = Model.Game.Name;
+    var avgRating = Model.Game.AverageRating();
 }
 
 <div>
     <div id="game-section" class="d-flex flex-column flex-md-row flex-nowrap">
-        <img id="cover" class="col-4 rounded-2 align-self-center" src="@Model.ImageUrl" alt="@Model.Name cover art">
+        <img
+            id="cover"
+            class="col-4 rounded-2 align-self-center"
+            src="@Model.Game.ImageUrl"
+            alt="@Model.Game.Name cover art"
+        >
         <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8">
-            <h2 class="mb-0">@Model.Name</h2>
+            <h2 class="mb-0">@Model.Game.Name</h2>
             <h4>
                 @if (avgRating != null)
                 {
                     @($"{avgRating:F2}")
                     <i class="bi bi-star-fill text-warning"></i>
-                    <span class="text-body-tertiary">(@Model.Reviews.Count @(Model.Reviews.Count > 1 ? "reviews" : "review"))</span>
+                    <span class="text-body-tertiary">(@Model.Game.Reviews.Count @(Model.Game.Reviews.Count > 1 ? "reviews" : "review"))</span>
                 }
                 else
                 {
@@ -26,9 +31,10 @@
     </div>
     <div id="reviews-section" class="mt-4">
         <h3>Reviews</h3>
-        @if (Model.Reviews.Count > 0)
+        <partial name="Components/ReviewForm" model="Model.AddReviewModel"/>
+        @if (Model.Game.Reviews.Count > 0)
         {
-            foreach (var review in Model.Reviews)
+            foreach (var review in Model.Game.Reviews)
             {
                 <partial
                     name="Components/ReviewCard"
@@ -39,7 +45,10 @@
         }
         else
         {
-            <h5>No reviews</h5>
+            <div class="text-center my-4">
+                <h4>No reviews yet</h4>
+                <p>Have you played this game? Be the first to write a review!</p>
+            </div>
         }
     </div>
 </div>
