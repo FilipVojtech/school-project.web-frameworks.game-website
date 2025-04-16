@@ -56,13 +56,13 @@
     </div>
     <div id="reviews-section" class="mt-4">
         <h3>Reviews</h3>
-        <partial name="Components/ReviewForm" model="Model.AddReviewModel"/>
+        <partial name="Partials/ReviewForm" model="Model.AddReviewModel"/>
         @if (Model.Game.Reviews.Count > 0)
         {
             foreach (var review in Model.Game.Reviews)
             {
                 <partial
-                    name="Components/ReviewCard"
+                    name="Partials/ReviewCard"
                     model="review"
                     view-data="@(new ViewDataDictionary(this.ViewData) { { "displayGame", false } })"
                 />
