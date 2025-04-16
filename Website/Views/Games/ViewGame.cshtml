@@ -13,9 +13,8 @@
             src="@Model.Game.ImageUrl"
             alt="@Model.Game.Name cover art"
         >
-        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8">
-            <h2>@Model.Game.Name</h2>
-            <h4>
+        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8 bg-body-secondary rounded-2 p-3">
+            <h5>
                 @if (avgRating != null)
                 {
                     @($"Avg. {avgRating:F2}/10")
@@ -25,7 +24,30 @@
                 {
                     <span class="text-body-tertiary">No ratings</span>
                 }
-            </h4>
+            </h5>
+            <h2>@Model.Game.Name</h2>
+            <div class="d-flex gap-2 fs-5">
+                @if (Model.Game.Developer != null)
+                {
+                    <span>@Model.Game.Developer</span>
+                }
+                @if (Model.Game.Developer != null && Model.Game.Publisher != null)
+                {
+                    <span>-</span>
+                }
+                @if (Model.Game.Publisher != null)
+                {
+                    <span>Published by @Model.Game.Publisher</span>
+                }
+            </div>
+            @if (Model.Game.Description != null)
+            {
+                <p class="mt-4 col-10">@Model.Game.Description</p>
+            }
+            <div>
+                <button type="button" class="btn btn btn-primary"><i class="bi bi-basket2-fill"></i> Add to basket
+                </button>
+            </div>
         </div>
     </div>
     <div id="reviews-section" class="mt-4">
