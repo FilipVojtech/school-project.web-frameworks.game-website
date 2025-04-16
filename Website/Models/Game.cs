@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Website.Models;
 
@@ -34,6 +35,16 @@ public class Game
 
     [DataType(DataType.Date)]
     public DateTime ReleaseDate { get; set; }
+
+    [MaxLength(30)]
+    public string? Developer { get; set; }
+
+    [MaxLength(30)]
+    public string? Publisher { get; set; }
+
+    [Column(TypeName = "text")]
+    [StringLength(int.MaxValue)]
+    public string? Description { get; set; }
 
     [Required]
     public virtual ICollection<Genre> Genres { get; set; } = [];
