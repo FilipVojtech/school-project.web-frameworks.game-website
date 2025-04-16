@@ -13,7 +13,7 @@
             src="@Model.Game.ImageUrl"
             alt="@Model.Game.Name cover art"
         >
-        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8 bg-body-secondary rounded-2 p-3">
+        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8 bg-body-secondary rounded-2 p-3 d-flex flex-column">
             <h5>
                 @if (avgRating != null)
                 {
@@ -44,8 +44,12 @@
             {
                 <p class="mt-4 col-10">@Model.Game.Description</p>
             }
-            <div>
-                <button type="button" class="btn btn btn-primary"><i class="bi bi-basket2-fill"></i> Add to basket
+            <div class="spacer flex-grow-1"></div>
+            <div class="">
+                <span>Price range</span>
+                <button type="button" class="btn btn btn-primary">
+                    <i class="bi bi-basket2-fill"></i>
+                    Add to basket
                 </button>
             </div>
         </div>
