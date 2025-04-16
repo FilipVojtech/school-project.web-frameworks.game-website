@@ -46,6 +46,8 @@ public class Game
     [StringLength(int.MaxValue)]
     public string? Description { get; set; }
 
+    public virtual IList<PlatformGame> Platforms { get; set; } = [];
+
     [Required]
     public virtual ICollection<Genre> Genres { get; set; } = [];
 
