@@ -23,10 +23,20 @@ public class BasketController(IBasketService basketService) : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddToBasket(int gameId)
     {
         var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
         await _basket.Add(gameId);
+        return Redirect(returnUrl);
+    }
+
+    [HttpPost("SetQuantity")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SetQuantity(int gameId, int quantity)
+    {
+        var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
+        await _basket.SetQuantity(gameId, quantity);
         return Redirect(returnUrl);
     }
 }
