@@ -13,7 +13,7 @@
             src="@Model.Game.ImageUrl"
             alt="@Model.Game.Name cover art"
         >
-        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-8 bg-body-secondary rounded-2 p-3 d-flex flex-column">
+        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-md-8 bg-body-secondary rounded-2 p-3 d-flex flex-column">
             <h5>
                 @if (avgRating != null)
                 {
@@ -45,12 +45,15 @@
                 <p class="mt-4 col-10">@Model.Game.Description</p>
             }
             <div class="spacer flex-grow-1"></div>
-            <div class="">
-                <span>Price range</span>
-                <button type="button" class="btn btn btn-primary">
-                    <i class="bi bi-basket2-fill"></i>
-                    Add to basket
-                </button>
+            <div class="d-flex gap-3 align-items-center">
+                <span class="fs-4">@Model.Game.Price.ToString("F2")&nbsp;&euro;</span>
+                <form asp-controller="Basket" asp-action="AddToBasket" method="post">
+                    <input type="hidden" name="gameId" value="@Model.Game.Id">
+                    <button type="submit" class="btn btn btn-primary">
+                        <i class="bi bi-basket2-fill"></i>
+                        Add to basket
+                    </button>
+                </form>
             </div>
         </div>
     </div>
