@@ -10,5 +10,5 @@ public class Platform
     [Required]
     public string Name { get; set; }
 
-    public virtual IList<PlatformGame> Games { get; set; } = [];
+    public virtual IList<Game> Games { get; set; } = [];
 }

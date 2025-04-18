@@ -46,7 +46,11 @@ public class Game
     [StringLength(int.MaxValue)]
     public string? Description { get; set; }
 
-    public virtual IList<PlatformGame> Platforms { get; set; } = [];
+    [DataType(DataType.Currency)]
+    [Column(TypeName = "money")]
+    public decimal Price { get; set; }
+
+    public virtual IList<Platform> Platforms { get; set; } = [];
 
     [Required]
     public virtual ICollection<Genre> Genres { get; set; } = [];
