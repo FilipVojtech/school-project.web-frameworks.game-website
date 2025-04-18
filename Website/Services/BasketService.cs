@@ -5,15 +5,26 @@ using Website.Models;
 
 namespace Website.Services;
 
-public class BasketService(ApplicationDbContext context, UserManager<User> userManager)
+public class BasketService(
+    ApplicationDbContext context,
+    UserManager<User> userManager,
+    IHttpContextAccessor httpContextAccessor)
     : IBasketService
 {
     private readonly ApplicationDbContext _context = context;
 
     private readonly UserManager<User> _userManager = userManager;
 
-    private async Task<Basket?> GetOrCreateBasket(HttpContext httpContext)
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+
+    private async Task<Basket?> GetOrCreateBasket()
     {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
+        {
+            return null;
+        }
+
         var user = await _userManager.GetUserAsync(httpContext.User);
         if (user == null)
         {
@@ -38,15 +49,15 @@ public class BasketService(ApplicationDbContext context, UserManager<User> userM
         return basket;
     }
 
-    public async Task<int> ProductCount(HttpContext httpContext)
+    public async Task<int> ProductCount()
     {
-        var basket = await GetOrCreateBasket(httpContext);
+        var basket = await GetOrCreateBasket();
         return basket == null ? 0 : basket.Items.Count;
     }
 
-    public async Task Add(HttpContext httpContext, long gameId)
+    public async Task Add(long gameId)
     {
-        var basket = await GetOrCreateBasket(httpContext);
+        var basket = await GetOrCreateBasket();
         if (basket == null) return;
 
         var game = await _context.Games
@@ -74,10 +85,10 @@ public class BasketService(ApplicationDbContext context, UserManager<User> userM
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IList<BasketItem>> Items(HttpContext httpContext)
+    public async Task<IList<BasketItem>> Items()
     {
         IList<BasketItem> items = new List<BasketItem>();
-        var basket = await GetOrCreateBasket(httpContext);
+        var basket = await GetOrCreateBasket();
         if (basket != null)
         {
             items = basket.Items;

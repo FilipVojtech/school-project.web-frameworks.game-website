@@ -48,6 +48,7 @@ public class Program
             });
 
         var mvcBuilder = builder.Services.AddControllersWithViews();
+        builder.Services.AddHttpContextAccessor();
 
         if (builder.Environment.IsDevelopment())
         {

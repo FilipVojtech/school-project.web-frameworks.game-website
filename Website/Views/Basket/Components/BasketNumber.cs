@@ -19,6 +19,6 @@ public class BasketNumber(IBasketService basketService) : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        return View(await _basketService.ProductCount(HttpContext));
+        return View(await _basketService.ProductCount());
     }
 }
