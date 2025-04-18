@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
 using Website.Models;
+using Website.Services;
 
 namespace Website;
 
@@ -63,6 +63,8 @@ public class Program
         //                        throw new InvalidOperationException("Could not get Twitch Client Secret");
         //     return new IGDBClient(clientId, clientSecret);
         // });
+
+        builder.Services.AddScoped<IBasketService, BasketService>();
 
         var app = builder.Build();
 
