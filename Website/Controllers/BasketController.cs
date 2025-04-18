@@ -17,4 +17,12 @@ public class BasketController(IBasketService basketService) : Controller
         var model = new ViewBasketViewModel();
         return View(model);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> AddToBasket(int gameId)
+    {
+        var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
+        await _basketService.Add(HttpContext, gameId);
+        return Redirect(returnUrl);
+    }
 }
