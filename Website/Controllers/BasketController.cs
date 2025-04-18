@@ -12,9 +12,12 @@ public class BasketController(IBasketService basketService) : Controller
     private readonly IBasketService _basketService = basketService;
 
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var model = new ViewBasketViewModel();
+        var model = new ViewBasketViewModel
+        {
+            Items = await _basketService.Items(HttpContext)
+        };
         return View(model);
     }
 
