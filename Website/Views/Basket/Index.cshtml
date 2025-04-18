@@ -4,11 +4,14 @@
 }
 
 <div>
-    <h1>Your Basket</h1>
-    <ul>
-        @foreach (var item in Model.Items)
-        {
-            <li>@item.Game.Name</li>
-        }
-    </ul>
+    <h2>Your Basket</h2>
+    @foreach (var item in Model.Items)
+    {
+        <partial name="Partials/BasketItemCard" model="item"/>
+    }
+    <hr>
+    <div class="fs-4 d-flex justify-content-between">
+        <div>Total</div>
+        <div>@Model.TotalPrice.ToString("F2")&nbsp;&euro;</div>
+    </div>
 </div>
