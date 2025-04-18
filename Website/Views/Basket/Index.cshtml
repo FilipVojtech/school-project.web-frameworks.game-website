@@ -5,4 +5,10 @@
 
 <div>
     <h1>Your Basket</h1>
+    <ul>
+        @foreach (var item in Model.Items)
+        {
+            <li>@item.Game.Name</li>
+        }
+    </ul>
 </div>
