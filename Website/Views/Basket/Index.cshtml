@@ -5,13 +5,22 @@
 
 <div>
     <h2>Your Basket</h2>
-    @foreach (var item in Model.Items)
+    @if (Model.Items.Count == 0)
     {
-        <partial name="Partials/BasketItemCard" model="item"/>
+        <h5>Your basket is empty</h5>
     }
-    <hr>
-    <div class="fs-4 d-flex justify-content-between">
-        <div>Total</div>
-        <div>@Model.TotalPrice.ToString("F2")&nbsp;&euro;</div>
-    </div>
+    else
+    {
+        foreach (var item in Model.Items)
+        {
+            <partial name="Partials/BasketItemCard" model="item"/>
+        }
+
+        <hr>
+
+        <div class="fs-4 d-flex justify-content-between">
+            <div>Total</div>
+            <div>@Model.TotalPrice.ToString("F2")&nbsp;&euro;</div>
+        </div>
+    }
 </div>
