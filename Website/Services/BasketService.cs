@@ -85,6 +85,26 @@ public class BasketService(
         await _context.SaveChangesAsync();
     }
 
+    public async Task SetQuantity(int gameId, int quantity)
+    {
+        var basket = await GetOrCreateBasket();
+        if (basket == null) return;
+
+        var item = basket.Items.FirstOrDefault(i => i.GameId == gameId);
+        if (item == null) return;
+
+        if (quantity == 0)
+        {
+            basket.Items.Remove(item);
+        }
+        else
+        {
+            item.Count = quantity;
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IList<BasketItem>> Items()
     {
         IList<BasketItem> items = new List<BasketItem>();

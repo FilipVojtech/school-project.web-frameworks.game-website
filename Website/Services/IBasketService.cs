@@ -18,6 +18,13 @@ public interface IBasketService
     Task Add(long gameId);
 
     /// <summary>
+    /// Set quantity of a game in the basket. Removed the game from the basket if quantity is zero.
+    /// </summary>
+    /// <param name="gameId">The ID of the game which quantity should be updated.</param>
+    /// <param name="quantity">The new quantity.</param>
+    Task SetQuantity(int gameId, int quantity);
+
+    /// <summary>
     /// Fetch items in currently in the basket.
     /// </summary>
     /// <returns>Promise that resolves in List of Basket Items.</returns>
