@@ -73,4 +73,16 @@ public class BasketService(ApplicationDbContext context, UserManager<User> userM
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IList<BasketItem>> Items(HttpContext httpContext)
+    {
+        IList<BasketItem> items = new List<BasketItem>();
+        var basket = await GetOrCreateBasket(httpContext);
+        if (basket != null)
+        {
+            items = basket.Items;
+        }
+
+        return items;
+    }
 }
