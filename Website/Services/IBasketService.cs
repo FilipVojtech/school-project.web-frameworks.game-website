@@ -22,4 +22,10 @@ public interface IBasketService
     /// </summary>
     /// <returns>Promise that resolves in List of Basket Items.</returns>
     Task<IList<BasketItem>> Items();
+
+    /// <summary>
+    /// Calculate the total price of the basket
+    /// </summary>
+    /// <returns>Total price of the basket or zero if no basket is assigned to the user</returns>
+    Task<decimal> TotalPrice();
 }

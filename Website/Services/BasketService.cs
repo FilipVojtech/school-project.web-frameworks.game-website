@@ -96,4 +96,10 @@ public class BasketService(
 
         return items;
     }
+
+    public async Task<decimal> TotalPrice()
+    {
+        var basket = await GetOrCreateBasket();
+        return basket?.TotalPrice() ?? 0;
+    }
 }
