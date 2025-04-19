@@ -1,3 +1,5 @@
+@inject IGenreService GenreService
+@using Website.Services
 @model Website.Helpers.PaginatedList<Game>
 @{
     ViewData["Title"] = "Games";
@@ -7,6 +9,7 @@
     @*Search box*@
     <form asp-action="Index" method="get" class="mb-2" id="searchForm">
         <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]">
+        <input type="hidden" name="genreId" value="@ViewData["SelectedGenre"]">
         <div class="input-group">
             <div class="form-floating">
                 <input
@@ -29,15 +32,16 @@
         </div>
     </form>
 
-    @*Sort options*@
-    <div class="mb-2">
+    <div class="mb-2 d-flex gap-2 justify-content-end">
+        @*Sort options*@
         <form
             asp-action="Index"
             method="get"
         >
             <input type="hidden" name="currentFilter" value="@ViewData["CurrentFilter"]">
             <input type="hidden" name="pageNumber" value="@Model.PageIndex">
-            <div class="input-group justify-content-end">
+            <input type="hidden" name="genreId" value="@ViewData["SelectedGenre"]">
+            <div class="input-group">
                 <i class="bi bi-sort-down input-group-text"></i>
                 <select
                     name="sortOrder"
@@ -54,6 +58,40 @@
                     <option value="name_desc" selected="@(currentSort == "name_desc")">Name Z-A</option>
                     <option value="price" selected="@(currentSort == "price")">Price Low to High</option>
                     <option value="price_desc" selected="@(currentSort == "price_desc")">Price High to Low</option>
+                </select>
+            </div>
+        </form>
+
+        @*Genre Filter*@
+        <form asp-action="Index" method="get">
+            <input type="hidden" name="currentFilter" value="@ViewData["CurrentFilter"]">
+            <input type="hidden" name="pageNumber" value="@Model.PageIndex">
+            <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]">
+            <div class="input-group ">
+                @if (ViewData["SelectedGenre"] == null)
+                {
+                    <span class="input-group-text">Genre</span>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-danger input-group-button" onclick="clearGenre()">
+                        <i class="bi bi-x-circle"></i>
+                        Genre
+                    </button>
+                }
+                <select
+                    name="genreId"
+                    class="form-select"
+                    aria-label="Genre Filter"
+                    onchange="this.form.submit()"
+                    style="flex:0; flex-basis: min-content">
+                    <option value=""></option>
+                    @foreach (var genre in await GenreService.All())
+                    {
+                        <option
+                            value="@genre.Id"
+                            selected="@((long?)ViewData["SelectedGenre"] == genre.Id)">@genre.Name</option>
+                    }
                 </select>
             </div>
         </form>
@@ -86,6 +124,7 @@
                         asp-route-sortOrder="@ViewData["CurrentSort"]"
                         asp-route-pageNumber="@(Model.PageIndex - 1)"
                         asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                        asp-route-genreId="@ViewData["SelectedGenre"]"
                         class="page-link @prevDisabled"
                     >
                         Previous
@@ -100,6 +139,7 @@
                             asp-route-sortOrder="@ViewData["CurrentSort"]"
                             asp-route-pageNumber="@i"
                             asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            asp-route-genreId="@ViewData["SelectedGenre"]"
                             class="page-link @active"
                         >
                             @i
@@ -112,6 +152,7 @@
                         asp-route-sortOrder="@ViewData["CurrentSort"]"
                         asp-route-pageNumber="@(Model.PageIndex + 1)"
                         asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                        asp-route-genreId="@ViewData["SelectedGenre"]"
                         class="page-link @nextDisabled"
                     >
                         Next
@@ -133,6 +174,12 @@
                 return;
             queryInput.val("");
             searchForm.submit();
+        }
+
+        function clearGenre() {
+            let searchParams = new URLSearchParams(window.location.search);
+            searchParams.delete("genreId");
+            window.location.search = `?${ searchParams }`;
         }
     </script>
 }
