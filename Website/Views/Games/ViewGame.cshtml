@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
 @model ViewGame
 
 @{
@@ -59,7 +61,20 @@
     </div>
     <div id="reviews-section" class="mt-4">
         <h3>Reviews</h3>
-        <partial name="Partials/ReviewForm" model="Model.AddReviewModel"/>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <partial name="Partials/ReviewForm" model="Model.AddReviewModel"/>
+        }
+        else
+        {
+            <div class="text-center border bg-light rounded p-3 mb-2">
+                <span class="fs-5 fw-bold">Want to add your review?</span>
+                <p class="mb-0">
+                    You can <a asp-area="Identity" asp-page="/Account/Login">log in</a> or
+                    <a asp-area="Identity" asp-page="/Account/Register">register</a> to do so
+                </p>
+            </div>
+        }
         @if (Model.Game.Reviews.Count > 0)
         {
             foreach (var review in Model.Game.Reviews)
