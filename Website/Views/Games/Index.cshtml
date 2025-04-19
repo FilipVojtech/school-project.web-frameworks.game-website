@@ -6,6 +6,7 @@
 <div>
     @*Search box*@
     <form asp-action="Index" method="get" class="mb-2" id="searchForm">
+        <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]">
         <div class="input-group">
             <div class="form-floating">
                 <input
