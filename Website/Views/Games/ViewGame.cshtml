@@ -49,13 +49,22 @@
             <div class="spacer flex-grow-1"></div>
             <div class="d-flex gap-3 align-items-center">
                 <span class="fs-4">@Model.Game.Price.ToString("F2")&nbsp;&euro;</span>
-                <form asp-controller="Basket" asp-action="AddToBasket" method="post">
-                    <input type="hidden" name="gameId" value="@Model.Game.Id">
-                    <button type="submit" class="btn btn btn-primary">
-                        <i class="bi bi-basket2-fill"></i>
-                        Add to basket
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-controller="Basket" asp-action="AddToBasket" method="post">
+                        <input type="hidden" name="gameId" value="@Model.Game.Id">
+                        <button type="submit" class="btn btn btn-primary">
+                            <i class="bi bi-basket2-fill"></i>
+                            Add to basket
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary" disabled>
+                        Sign in to buy
                     </button>
-                </form>
+                }
             </div>
         </div>
     </div>

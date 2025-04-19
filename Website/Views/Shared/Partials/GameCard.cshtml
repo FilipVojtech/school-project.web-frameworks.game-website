@@ -1,3 +1,5 @@
+@inject SignInManager<User> SignInManager
+@using Microsoft.AspNetCore.Identity
 @model Game
 
 <div class="game-card card w-100 mb-2">
@@ -23,13 +25,22 @@
                 </div>
                 <div id="game-card__footer-end" class="d-flex align-items-center gap-3">
                     <span class="fs-4">@Model.Price.ToString("F2")&nbsp;&euro;</span>
-                    <form asp-controller="Basket" asp-action="AddToBasket" method="post">
-                        <input type="hidden" name="gameId" value="@Model.Id">
-                        <button type="submit" class="btn btn btn-primary">
-                            <i class="bi bi-basket2-fill"></i>
-                            Add to basket
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <form asp-controller="Basket" asp-action="AddToBasket" method="post">
+                            <input type="hidden" name="gameId" value="@Model.Id">
+                            <button type="submit" class="btn btn btn-primary">
+                                <i class="bi bi-basket2-fill"></i>
+                                Add to basket
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary" disabled>
+                            Sign in to buy
                         </button>
-                    </form>
+                    }
                 </div>
             </div>
         </div>
