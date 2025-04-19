@@ -22,7 +22,7 @@ public class BasketController(IBasketService basketService) : Controller
         return View(model);
     }
 
-    [HttpPost]
+    [HttpPost("AddToBasket")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddToBasket(int gameId)
     {
