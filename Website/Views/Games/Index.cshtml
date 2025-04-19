@@ -32,7 +32,7 @@
         </div>
     </form>
 
-    <div class="mb-2 d-flex gap-2 justify-content-end">
+    <div class="mb-2 d-flex gap-2 justify-content-end flex-column flex-sm-row align-items-center">
         @*Genre Filter*@
         <form asp-action="Index" method="get">
             <input type="hidden" name="currentFilter" value="@ViewData["CurrentFilter"]">
