@@ -1,5 +1,10 @@
-﻿@using Website.Helpers
+﻿@using Microsoft.AspNetCore.Identity
+@using Website.Helpers
 @using Website.Views.Basket.Components
+@inject SignInManager<User> SignInManager
+@{
+    var signedIn = SignInManager.IsSignedIn(User);
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,15 +52,18 @@
                     <li class="nav-item rounded-5 px-2 mb-2 mb-sm-0 @Html.IsSelected("Home", "Index", "bg-primary")">
                         <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
-                    <li class="nav-item rounded-5 px-2 mb-2 mb-sm-0 @Html.IsSelected("Games", "Index,Search", "bg-primary")">
+                    <li class="nav-item rounded-5 px-2 @(signedIn ? "mb-2 mb-sm-0" : "") @Html.IsSelected("Games", "Index,Search", "bg-primary")">
                         <a class="nav-link text-white" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
                     </li>
-                    <li class="nav-item rounded-5 px-2 @Html.IsSelected("Basket", "Index", "bg-primary")">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Basket" asp-action="Index">
-                            <span>Basket</span>
-                            @await Component.InvokeAsync(nameof(BasketNumber))
-                        </a>
-                    </li>
+                    @if (signedIn)
+                    {
+                        <li class="nav-item rounded-5 px-2 @Html.IsSelected("Basket", "Index", "bg-primary")">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Basket" asp-action="Index">
+                                <span>Basket</span>
+                                @await Component.InvokeAsync(nameof(BasketNumber))
+                            </a>
+                        </li>
+                    }
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
