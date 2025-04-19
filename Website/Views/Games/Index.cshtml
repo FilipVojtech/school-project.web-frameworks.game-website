@@ -1,25 +1,28 @@
-@model Website.Models.ViewModels.GamesViewModel;
+@model Website.Helpers.PaginatedList<Game>
 @{
     ViewData["Title"] = "Games";
 }
 
 <div>
-    <form action="" class="mb-2" id="searchForm">
+    <form asp-action="Index" method="get" class="mb-2" id="searchForm">
         <div class="input-group">
             <div class="form-floating">
-                @Html.TextBoxFor(
-                    model => model.Query,
-                    string.Empty,
-                    new { type = "search", @class = "form-control", placeholder = "", id = "queryInput" }
-                )
-                @Html.LabelFor(m => m.Query, "Search Games")
+                <input
+                    type="search"
+                    name="query"
+                    value="@ViewData["CurrentFilter"]"
+                    class="form-control"
+                    placeholder=""
+                    id="queryInput"
+                />
+                <label>Search Games</label>
             </div>
             <button type="button" class="btn btn-secondary" onclick="clearSearch()"><i class="bi bi-x-lg"></i></button>
             <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
         </div>
     </form>
 
-    @foreach (var game in Model.Games)
+    @foreach (var game in Model)
     {
         <a
             asp-controller="Games"
@@ -29,6 +32,54 @@
         >
             <partial name="Partials/GameCard" model="game"/>
         </a>
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+        <nav aria-label="Games results pages">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-sortOrder="@ViewData["CurrentSort"]"
+                        asp-route-pageNumber="@(Model.PageIndex - 1)"
+                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                        class="page-link @prevDisabled"
+                    >
+                        Previous
+                    </a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    var active = i == Model.PageIndex ? "active" : "";
+                    <li class="page-item">
+                        <a
+                            asp-action="Index"
+                            asp-route-sortOrder="@ViewData["CurrentSort"]"
+                            asp-route-pageNumber="@i"
+                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                            class="page-link @active"
+                        >
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-sortOrder="@ViewData["CurrentSort"]"
+                        asp-route-pageNumber="@(Model.PageIndex + 1)"
+                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                        class="page-link @nextDisabled"
+                    >
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
     }
 </div>
 
