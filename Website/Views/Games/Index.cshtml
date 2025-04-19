@@ -74,7 +74,7 @@
                 }
                 else
                 {
-                    <button type="button" class="btn btn-danger input-group-button" onclick="clearGenre()">
+                    <button type="button" class="btn btn-primary input-group-button" onclick="clearGenre()">
                         <i class="bi bi-x-circle"></i>
                         Genre
                     </button>
@@ -84,13 +84,17 @@
                     class="form-select"
                     aria-label="Genre Filter"
                     onchange="this.form.submit()"
-                    style="flex:0; flex-basis: min-content">
+                    style="flex:0; flex-basis: min-content"
+                >
                     <option value=""></option>
                     @foreach (var genre in await GenreService.All())
                     {
                         <option
                             value="@genre.Id"
-                            selected="@((long?)ViewData["SelectedGenre"] == genre.Id)">@genre.Name</option>
+                            selected="@((long?)ViewData["SelectedGenre"] == genre.Id)"
+                        >
+                            @genre.Name
+                        </option>
                     }
                 </select>
             </div>
