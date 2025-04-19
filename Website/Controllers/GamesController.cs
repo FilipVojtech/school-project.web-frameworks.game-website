@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
+using Website.Helpers;
 using Website.Models;
 using Website.Models.ViewModels;
 
@@ -21,30 +22,42 @@ public class GamesController(
 
     // GET
     [HttpGet]
-    public async Task<IActionResult> Index(string? query)
+    public async Task<IActionResult> Index(string? query, string sortOrder, string currentFilter, int? pageNumber)
     {
-        var model = new GamesViewModel { Query = query };
-        if (string.IsNullOrEmpty(query))
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["Query"] = query;
+
+        if (query != null)
         {
-            model.Games = await _context.Games
-                .AsNoTracking()
-                .OrderBy(g => g.Name)
-                .Include(g => g.Genres)
-                .Take(20)
-                .ToListAsync();
+            pageNumber = 1;
         }
         else
         {
-            model.Games = await _context.Games
-                .AsNoTracking()
-                .Where(g => EF.Functions.Like(g.Name, $"%{query}%"))
-                .Include(g => g.Genres)
-                .OrderBy(g => g.Name)
-                .Take(20)
-                .ToListAsync();
+            query = currentFilter;
         }
 
-        return View(model);
+        ViewData["CurrentFilter"] = query;
+
+        IQueryable<Game> games = _context.Games
+            .AsNoTracking()
+            .Include(g => g.Genres);
+
+        if (!string.IsNullOrEmpty(query))
+        {
+            games = games.Where(g => EF.Functions.Like(g.Name, $"%{query}%"));
+        }
+
+        games = sortOrder switch
+        {
+            "name_desc" => games.OrderByDescending(g => g.Name),
+            "price" => games.OrderBy(g => g.Price),
+            "price_desc" => games.OrderByDescending(g => g.Price),
+            _ => games.OrderBy(g => g.Name)
+        };
+
+        const int pageSize = 20;
+
+        return View(await PaginatedList<Game>.CreateAsync(games, pageNumber ?? 1, pageSize));
     }
 
     // GET: /Games/{id}
