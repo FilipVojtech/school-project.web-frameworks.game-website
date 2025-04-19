@@ -66,6 +66,7 @@ public class Program
         // });
 
         builder.Services.AddScoped<IBasketService, BasketService>();
+        builder.Services.AddScoped<IGenreService, GenreService>();
 
         var app = builder.Build();
 
