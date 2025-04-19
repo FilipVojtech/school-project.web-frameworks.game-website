@@ -22,10 +22,16 @@ public class GamesController(
 
     // GET
     [HttpGet]
-    public async Task<IActionResult> Index(string? query, string sortOrder, string currentFilter, int? pageNumber)
+    public async Task<IActionResult> Index(
+        string? query,
+        string sortOrder,
+        string currentFilter,
+        int? pageNumber,
+        long? genreId)
     {
         ViewData["CurrentSort"] = sortOrder;
         ViewData["Query"] = query;
+        ViewData["SelectedGenre"] = genreId;
 
         if (query != null)
         {
@@ -45,6 +51,11 @@ public class GamesController(
         if (!string.IsNullOrEmpty(query))
         {
             games = games.Where(g => EF.Functions.Like(g.Name, $"%{query}%"));
+        }
+
+        if (genreId != null)
+        {
+            games = games.Where(g => g.Genres.Any(ge => ge.Id == genreId));
         }
 
         games = sortOrder switch
