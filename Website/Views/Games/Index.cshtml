@@ -28,6 +28,36 @@
         </div>
     </form>
 
+    @*Sort options*@
+    <div class="mb-2">
+        <form
+            asp-action="Index"
+            method="get"
+        >
+            <input type="hidden" name="currentFilter" value="@ViewData["CurrentFilter"]">
+            <input type="hidden" name="pageNumber" value="@Model.PageIndex">
+            <div class="input-group justify-content-end">
+                <i class="bi bi-sort-down input-group-text"></i>
+                <select
+                    name="sortOrder"
+                    class="form-select"
+                    aria-label="Sorting options"
+                    onchange="this.form.submit()"
+                    style="flex:0; flex-basis: min-content"
+                    id="orderBy"
+                >
+                    @{
+                        var currentSort = (string?)ViewData["CurrentSort"] ?? string.Empty;
+                    }
+                    <option value="name" selected="@(currentSort == "name")">Name A-Z</option>
+                    <option value="name_desc" selected="@(currentSort == "name_desc")">Name Z-A</option>
+                    <option value="price" selected="@(currentSort == "price")">Price Low to High</option>
+                    <option value="price_desc" selected="@(currentSort == "price_desc")">Price High to Low</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
     @*Games list*@
     @foreach (var game in Model)
     {
