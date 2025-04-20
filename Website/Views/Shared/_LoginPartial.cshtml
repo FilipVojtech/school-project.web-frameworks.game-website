@@ -19,6 +19,15 @@
                         Account
                     </a>
                 </li>
+                <li>
+                    <a
+                        class="dropdown-item"
+                        asp-controller="Reviews"
+                        asp-action="Index"
+                    >
+                        My Reviews
+                    </a>
+                </li>
                 @{
                     var user = await SignInManager.UserManager.GetUserAsync(User);
                     if (user != null && await SignInManager.UserManager.IsInRoleAsync(user, "Admin"))
