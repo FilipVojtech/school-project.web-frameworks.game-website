@@ -50,6 +50,8 @@ public class Game
     [Column(TypeName = "money")]
     public decimal Price { get; set; }
 
+    public bool Public { get; set; }
+
     public virtual IList<Platform> Platforms { get; set; } = [];
 
     [Required]
