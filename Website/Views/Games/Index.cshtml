@@ -57,7 +57,7 @@
                     onchange="this.form.submit()"
                     style="flex:0; flex-basis: min-content"
                 >
-                    <option value=""></option>
+                    <option value="">Select a genre</option>
                     @foreach (var genre in await GenreService.All())
                     {
                         <option
