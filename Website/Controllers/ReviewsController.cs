@@ -17,6 +17,11 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
     private readonly UserManager<User> _userManager = userManager;
 
     // GET
+    private bool ReviewExists(long reviewId)
+    {
+        return _context.Reviews.Any(r => r.Id == reviewId);
+    }
+
     public async Task<IActionResult> Index(int pageNumber = 1)
     {
         var user = (await _userManager.GetUserAsync(User))!;
@@ -76,10 +81,5 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
 
         ViewData["ReturnUrl"] = returnUrl;
         return View(review);
-    }
-
-    private bool ReviewExists(long reviewId)
-    {
-        return _context.Reviews.Any(r => r.Id == reviewId);
     }
 }
