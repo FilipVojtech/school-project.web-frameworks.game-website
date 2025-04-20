@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
-using Website.Models;
 
 namespace Website.Controllers;
 
@@ -28,79 +27,6 @@ public class ReviewsAdmin(ApplicationDbContext context) : Controller
             return NotFound();
         }
 
-        return View(review);
-    }
-
-    // GET: ReviewsAdmin/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: ReviewsAdmin/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Body,Rating")] Review review)
-    {
-        if (ModelState.IsValid)
-        {
-            context.Add(review);
-            await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        return View(review);
-    }
-
-    // GET: ReviewsAdmin/Edit/5
-    public async Task<IActionResult> Edit(long? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var review = await context.Reviews.FindAsync(id);
-        if (review == null)
-        {
-            return NotFound();
-        }
-        return View(review);
-    }
-
-    // POST: ReviewsAdmin/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(long id, [Bind("Id,Title,Body,Rating")] Review review)
-    {
-        if (id != review.Id)
-        {
-            return NotFound();
-        }
-
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                context.Update(review);
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReviewExists(review.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-        }
         return View(review);
     }
 
