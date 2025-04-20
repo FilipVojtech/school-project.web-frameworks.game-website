@@ -28,4 +28,58 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
         var list = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 20);
         return View(list);
     }
+
+    [Route("Edit")]
+    public async Task<IActionResult> Edit(int reviewId)
+    {
+        var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
+        var review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
+        ViewData["ReturnUrl"] = returnUrl;
+
+        if (review == null)
+        {
+            return NotFound();
+        }
+
+        return View(review);
+    }
+
+    [HttpPost("Edit")]
+    public async Task<IActionResult> Edit(string returnUrl, long id, [Bind("Id,Title,Body,Rating,AuthorId,GameId")] Review review)
+    {
+        if (id != review.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(review);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReviewExists(review.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Redirect(returnUrl);
+        }
+
+        ViewData["ReturnUrl"] = returnUrl;
+        return View(review);
+    }
+
+    private bool ReviewExists(long reviewId)
+    {
+        return _context.Reviews.Any(r => r.Id == reviewId);
+    }
 }
