@@ -1,0 +1,62 @@
+@model Website.Helpers.PaginatedList<Review>
+
+@{
+}
+
+<h2 class="mb-4">My reviews</h2>
+<div>
+    @if (Model.Count != 0)
+    {
+        foreach (var review in Model)
+        {
+            <partial name="Partials/ReviewCard" model="review"/>
+        }
+    }
+    else
+    {
+        <h4 class="text-center mt-5">No reviews</h4>
+    }
+
+    @*Pagination*@
+    @if (Model.TotalPages > 1)
+    {
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+        <nav aria-label="Games results pages">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-pageNumber="@(Model.PageIndex - 1)"
+                        class="page-link @prevDisabled"
+                    >
+                        Previous
+                    </a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    var active = i == Model.PageIndex ? "active" : "";
+                    <li class="page-item">
+                        <a
+                            asp-action="Index"
+                            asp-route-pageNumber="@i"
+                            class="page-link @active"
+                        >
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-pageNumber="@(Model.PageIndex + 1)"
+                        class="page-link @nextDisabled"
+                    >
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
