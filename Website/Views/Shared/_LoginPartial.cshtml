@@ -9,12 +9,44 @@
                 @User.Identity?.Name
             </a>
             <ul class="dropdown-menu" id="user-menu">
-                <li><a
+                <li>
+                    <a
                         class="dropdown-item"
                         asp-area="Identity"
                         asp-page="/Account/Manage/Index"
                         title="Manage Account"
-                    >Account</a></li>
+                    >
+                        Account
+                    </a>
+                </li>
+                @{
+                    var user = await SignInManager.UserManager.GetUserAsync(User);
+                    if (user != null && await SignInManager.UserManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><h6 class="dropdown-header">Admin Section</h6></li>
+                        <li>
+                            <a
+                                class="dropdown-item"
+                                asp-controller="GamesAdmin"
+                                asp-action="Index"
+                            >
+                                Games
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="dropdown-item"
+                                asp-controller="ReviewsAdmin"
+                                asp-action="Index"
+                            >
+                                Reviews
+                            </a>
+                        </li>
+                    }
+                }
                 <li>
                     <hr class="dropdown-divider">
                 </li>
