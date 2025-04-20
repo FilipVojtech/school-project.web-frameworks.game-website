@@ -16,13 +16,19 @@ public class Review
     [Required]
     public string Body { get; set; }
 
+    [ForeignKey(nameof(GameId))]
+    public Game? Game { get; set; }
+
     [Required]
-    public Game Game { get; set; }
+    public long GameId { get; set; }
 
     [Required]
     [Range(0, 10)]
     public int Rating { get; set; }
 
+    public string? AuthorId { get; set; }
+
+    [ForeignKey(nameof(AuthorId))]
     [DeleteBehavior(DeleteBehavior.SetNull)]
     public User? Author { get; set; }
 }
