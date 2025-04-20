@@ -4,12 +4,12 @@ using Website.Data;
 
 namespace Website.Controllers;
 
-public class ReviewsAdmin(ApplicationDbContext context) : Controller
+public class ReviewsAdminController(ApplicationDbContext context) : Controller
 {
     // GET: ReviewsAdmin
     public async Task<IActionResult> Index()
     {
-        return View(await context.Reviews.ToListAsync());
+        return View(await context.Reviews.Include(r => r.Author).ToListAsync());
     }
 
     // GET: ReviewsAdmin/Details/5
@@ -21,6 +21,7 @@ public class ReviewsAdmin(ApplicationDbContext context) : Controller
         }
 
         var review = await context.Reviews
+            .Include(r => r.Author)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (review == null)
         {
@@ -39,6 +40,7 @@ public class ReviewsAdmin(ApplicationDbContext context) : Controller
         }
 
         var review = await context.Reviews
+            .Include(r => r.Author)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (review == null)
         {
