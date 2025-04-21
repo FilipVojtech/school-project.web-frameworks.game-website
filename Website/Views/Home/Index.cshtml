@@ -4,8 +4,7 @@
 }
 
 <div class="">
-    <h1 class="text-center display-5">Latest Reviews</h1>
-    <p class="text-center">List of user reviews</p>
+    <h2 class="text-center display-6 mb-3">Latest Reviews</h2>
     <div class="flex-column">
         @if (Model.Reviews.Count > 0)
         {
@@ -19,4 +18,45 @@
             <p>No Reviews</p>
         }
     </div>
+    @if (Model.Reviews.TotalPages > 1)
+    {
+        var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+
+        <nav aria-label="Games results pages">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-pageNumber="@(Model.Reviews.PageIndex - 1)"
+                        class="page-link @prevDisabled"
+                    >
+                        Previous
+                    </a>
+                </li>
+                @for (var i = 1; i <= Model.Reviews.TotalPages; i++)
+                {
+                    var active = i == Model.Reviews.PageIndex ? "active" : "";
+                    <li class="page-item">
+                        <a
+                            asp-action="Index"
+                            asp-route-pageNumber="@i"
+                            class="page-link @active"
+                        >
+                            @i
+                        </a>
+                    </li>
+                }
+                <li class="page-item">
+                    <a
+                        asp-action="Index"
+                        asp-route-pageNumber="@(Model.Reviews.PageIndex + 1)"
+                        class="page-link @nextDisabled"
+                    >
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

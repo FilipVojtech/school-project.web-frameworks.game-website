@@ -3,38 +3,35 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
+using Website.Helpers;
 using Website.Models;
 using Website.Models.ViewModels;
 
 namespace Website.Controllers;
 
 public class HomeController(
-    ILogger<HomeController> logger,
     ApplicationDbContext context,
     RoleManager<IdentityRole> roleManager,
     UserManager<User> userManager) : Controller
 {
-    private readonly ILogger<HomeController> _logger = logger;
-
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
     private readonly UserManager<User> _userManager = userManager;
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(int pageNumber = 1)
     {
         var reviews = context.Reviews
             .AsNoTracking()
+            .OrderBy(r => r.CreatedAt)
             .Include(r => r.Game)
-            .Include(r => r.Author)
-            .Take(25)
-            .ToList();
+            .Include(r => r.Author);
 
-        var homeVM = new HomeViewModel
+        var homeVm = new HomeViewModel
         {
-            Reviews = reviews,
+            Reviews = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 50),
         };
 
-        return View(homeVM);
+        return View(homeVm);
     }
 
     public IActionResult Privacy()
