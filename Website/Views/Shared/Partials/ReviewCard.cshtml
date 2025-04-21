@@ -23,8 +23,11 @@
         </div>
     </div>
     <div class="card-body">
-        <h5 class="card-title">@Model.Title</h5>
-        <p class="card-text">@Model.Body</p>
+        @if (!string.IsNullOrEmpty(Model.Title))
+        {
+            <h5 class="card-title">@Model.Title</h5>
+        }
+        <pre class="card-text" style="font-family: var(--bs-body-font-family); font-size: 1rem">@Model.Body</pre>
     </div>
     <div class="card-footer fs-5">
        @Model.Rating/10
