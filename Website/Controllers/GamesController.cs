@@ -9,14 +9,9 @@ using Website.Models.ViewModels;
 namespace Website.Controllers;
 
 [Route("[controller]")]
-public class GamesController(
-    ApplicationDbContext context,
-    ILogger<GamesController> logger,
-    UserManager<User> userManager) : Controller
+public class GamesController(ApplicationDbContext context, UserManager<User> userManager) : Controller
 {
     private readonly ApplicationDbContext _context = context;
-
-    private readonly ILogger<GamesController> _logger = logger;
 
     private readonly UserManager<User> _userManager = userManager;
 
@@ -72,14 +67,12 @@ public class GamesController(
     }
 
     // GET: /Games/{id}
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> ViewGame(int id, AddReviewModel? addReviewModel = null)
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ViewGame(long id, AddReviewModel? addReviewModel = null, int pageNumber = 1)
     {
         var model = new ViewGame();
         var game = await _context.Games
             .AsNoTracking()
-            .Include(g => g.Reviews)
-            .ThenInclude(g => g.Author)
             .FirstOrDefaultAsync(g => g.Id == id);
 
         if (game == null)
@@ -94,6 +87,17 @@ public class GamesController(
         {
             model.AddReviewModel = addReviewModel;
         }
+
+        var reviews = _context.Reviews
+            .AsNoTracking()
+            .Include(r => r.Author)
+            .Where(r => r.Game == game);
+
+        model.ReviewCount = await reviews.CountAsync();
+        if (model.ReviewCount > 0)
+            model.AverageRating = await reviews.AverageAsync(r => r.Rating);
+
+        model.Reviews = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 20);
 
         return View(model);
     }

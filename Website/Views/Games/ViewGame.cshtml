@@ -4,7 +4,6 @@
 
 @{
     ViewData["Title"] = Model.Game.Name;
-    var avgRating = Model.Game.AverageRating();
 }
 
 <div>
@@ -17,10 +16,10 @@
         >
         <div id="content" class="ms-md-2 mt-2 mt-md-0 col-md-8 bg-body-secondary rounded-2 p-3 d-flex flex-column">
             <h5>
-                @if (avgRating != null)
+                @if (Model.AverageRating != null)
                 {
-                    @($"Avg. {avgRating:F2}/10")
-                    <span class="text-body-tertiary">(@Model.Game.Reviews.Count @(Model.Game.Reviews.Count > 1 ? "reviews" : "review"))</span>
+                    @($"Avg. {Model.AverageRating:F2}/10")
+                    <span class="text-body-tertiary">(@Model.ReviewCount @(Model.ReviewCount > 1 ? "reviews" : "review"))</span>
                 }
                 else
                 {
@@ -84,15 +83,61 @@
                 </p>
             </div>
         }
-        @if (Model.Game.Reviews.Count > 0)
+        @if (Model.Reviews.Count > 0)
         {
-            foreach (var review in Model.Game.Reviews)
+            foreach (var review in Model.Reviews)
             {
                 <partial
                     name="Partials/ReviewCard"
                     model="review"
                     view-data="@(new ViewDataDictionary(this.ViewData) { { "displayGame", false } })"
                 />
+            }
+
+            @*Pagination*@
+            if (Model.Reviews.TotalPages > 1)
+            {
+                var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+
+                <nav aria-label="Games results pages">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a
+                                asp-action="ViewGame"
+                                asp-route-pageNumber="@(Model.Reviews.PageIndex - 1)"
+                                asp-route-id="@Model.Game.Id"
+                                class="page-link @prevDisabled"
+                            >
+                                Previous
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= Model.Reviews.TotalPages; i++)
+                        {
+                            var active = i == Model.Reviews.PageIndex ? "active" : "";
+                            <li class="page-item">
+                                <a
+                                    asp-action="ViewGame"
+                                    asp-route-pageNumber="@i"
+                                    asp-route-id="@Model.Game.Id"
+                                    class="page-link @active"
+                                >
+                                    @i
+                                </a>
+                            </li>
+                        }
+                        <li class="page-item">
+                            <a
+                                asp-action="ViewGame"
+                                asp-route-id="@Model.Game.Id"
+                                asp-route-pageNumber="@(Model.Reviews.PageIndex + 1)"
+                                class="page-link @nextDisabled"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             }
         }
         else
