@@ -16,6 +16,10 @@ public class Review
     [Required]
     public string Body { get; set; }
 
+    [DataType(DataType.DateTime)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
     [ForeignKey(nameof(GameId))]
     public Game? Game { get; set; }
 

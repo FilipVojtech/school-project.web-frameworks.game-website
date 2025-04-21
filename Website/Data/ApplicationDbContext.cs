@@ -4,11 +4,15 @@ using Website.Models;
 
 namespace Website.Data;
 
-public class ApplicationDbContext : IdentityDbContext<User>
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<User>(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<Review>()
+            .Property(re => re.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        base.OnModelCreating(builder);
     }
 
     public DbSet<Game> Games { get; set; } = null!;
