@@ -50,7 +50,9 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
     }
 
     [HttpPost("Edit")]
-    public async Task<IActionResult> Edit(string returnUrl, long id, [Bind("Id,Title,Body,Rating,AuthorId,GameId")] Review review)
+    public async Task<IActionResult> Edit(string returnUrl, long id,
+        [Bind("Id,Title,Body,Rating,AuthorId,GameId")]
+        Review review)
     {
         if (id != review.Id)
         {
@@ -81,5 +83,44 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
 
         ViewData["ReturnUrl"] = returnUrl;
         return View(review);
+    }
+
+    [Route("Delete")]
+    public async Task<IActionResult> Delete(long? id)
+    {
+        var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
+        ViewData["ReturnUrl"] = returnUrl;
+
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var review = await _context.Reviews
+            .Include(r => r.Author)
+            .Include(r => r.Game)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (review == null)
+        {
+            return NotFound();
+        }
+
+
+        return View(review);
+    }
+
+    [HttpPost("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(string returnUrl, long id)
+    {
+        var review = await context.Reviews.FindAsync(id);
+        if (review != null)
+        {
+            context.Reviews.Remove(review);
+        }
+        await context.SaveChangesAsync();
+
+        return Redirect(returnUrl);
     }
 }
