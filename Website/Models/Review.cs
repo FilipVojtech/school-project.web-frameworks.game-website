@@ -28,6 +28,7 @@ public class Review
 
     [Required]
     [Range(0, 10)]
+    [DisplayFormat(DataFormatString = "{0}/10")]
     public int Rating { get; set; }
 
     public string? AuthorId { get; set; }
