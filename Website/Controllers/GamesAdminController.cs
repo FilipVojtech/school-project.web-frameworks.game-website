@@ -91,6 +91,8 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(long id,
+        List<string> genres,
+        IList<string> platforms,
         [Bind("Id,Name,Url,ImageUrl,ReleaseDate,Developer,Publisher,Description,Price,Public")]
         Game game)
     {
@@ -99,11 +101,24 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
             return NotFound();
         }
 
+        var genreObjects = await context.Genres
+            .Where(g => genres.Contains(g.Id.ToString()))
+            .ToListAsync();
+        var platformObjects = await context.Platforms
+            .Where(p => platforms.Contains(p.Id.ToString()))
+            .ToListAsync();
+
         if (ModelState.IsValid)
         {
             try
             {
                 context.Update(game);
+                game = await context.Games
+                    .Include(g => g.Genres)
+                    .Include(g => g.Platforms)
+                    .FirstAsync(g => g.Id == game.Id);
+                game.Genres = genreObjects;
+                game.Platforms = platformObjects;
                 await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
