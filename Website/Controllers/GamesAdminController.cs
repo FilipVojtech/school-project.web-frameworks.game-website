@@ -66,11 +66,21 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
             return NotFound();
         }
 
-        var game = await context.Games.FindAsync(id);
+        var game = await context.Games
+            .Include(g => g.Genres)
+            .Include(g => g.Platforms)
+            .FirstOrDefaultAsync(g => g.Id == id);
         if (game == null)
         {
             return NotFound();
         }
+
+        ViewData["Genres"] = await context.Genres
+            .AsNoTracking()
+            .ToListAsync();
+        ViewData["Platforms"] = await context.Platforms
+            .AsNoTracking()
+            .ToListAsync();
 
         return View(game);
     }
