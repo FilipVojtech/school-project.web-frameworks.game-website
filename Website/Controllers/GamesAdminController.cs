@@ -50,9 +50,21 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
+        List<string> genres,
+        IList<string> platforms,
         [Bind("Id,Name,Url,ImageUrl,ReleaseDate,Developer,Publisher,Description,Price,Public")]
         Game game)
     {
+        var genreObjects = await context.Genres
+            .Where(g => genres.Contains(g.Id.ToString()))
+            .ToListAsync();
+        var platformObjects = await context.Platforms
+            .Where(p => platforms.Contains(p.Id.ToString()))
+            .ToListAsync();
+
+        game.Platforms = platformObjects;
+        game.Genres = genreObjects;
+
         if (ModelState.IsValid)
         {
             context.Add(game);
