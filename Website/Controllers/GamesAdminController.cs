@@ -27,6 +27,7 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
             .Include(g => g.Genres)
             .Include(g => g.Platforms)
             .FirstOrDefaultAsync(m => m.Id == id);
+
         if (game == null)
         {
             return NotFound();
@@ -41,7 +42,7 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
         ViewData["Platforms"] = await context.Platforms.AsNoTracking().ToListAsync();
         ViewData["Genres"] = await context.Genres.AsNoTracking().ToListAsync();
 
-        return View();
+        return View(new Game());
     }
 
     // POST: GamesAdmin/Create
@@ -87,6 +88,7 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
             .Include(g => g.Genres)
             .Include(g => g.Platforms)
             .FirstOrDefaultAsync(g => g.Id == id);
+
         if (game == null)
         {
             return NotFound();
