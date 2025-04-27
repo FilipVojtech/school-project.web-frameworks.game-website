@@ -31,9 +31,16 @@
                 @Html.DisplayFor(modelItem => item.Slug)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <div class="d-flex gap-2 fs-5">
+                    <a
+                        asp-action="Edit"
+                        asp-route-id="@item.Id"
+                    ><i class="bi bi-pencil-square"><span class="visually-hidden">Edit</span></i></a>
+                    <a
+                        asp-action="Delete"
+                        asp-route-id="@item.Id"
+                    ><i class="bi bi-x-circle text-danger"></i><span class="visually-hidden">Delete</span></a>
+                </div>
             </td>
         </tr>
 }
