@@ -24,6 +24,8 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
         }
 
         var game = await context.Games
+            .Include(g => g.Genres)
+            .Include(g => g.Platforms)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (game == null)
         {
