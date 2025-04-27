@@ -15,24 +15,6 @@ public class GenresAdminController(ApplicationDbContext context) : Controller
         return View(await context.Genres.ToListAsync());
     }
 
-    // GET: GenresAdmin/Details/5
-    public async Task<IActionResult> Details(long? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var genre = await context.Genres
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (genre == null)
-        {
-            return NotFound();
-        }
-
-        return View(genre);
-    }
-
     // GET: GenresAdmin/Create
     public IActionResult Create()
     {
