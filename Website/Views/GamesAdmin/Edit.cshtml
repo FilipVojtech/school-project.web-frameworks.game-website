@@ -2,55 +2,57 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var genres = (IList<Genre>?)ViewData["Genres"] ?? [];
+    var platforms = (IList<Platform>?)ViewData["Platforms"] ?? [];
 }
 
 <h1>Edit</h1>
 
 <h4>Game</h4>
-<hr />
+<hr/>
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <form asp-action="Edit" class="row">
+        <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Id"/>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
+                <textarea asp-for="Description" rows="10" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Url" class="control-label"></label>
-                <input asp-for="Url" class="form-control" />
+                <input asp-for="Url" class="form-control"/>
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
+                <input asp-for="ImageUrl" class="form-control"/>
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
+                <input asp-for="ReleaseDate" class="form-control"/>
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Developer" class="control-label"></label>
-                <input asp-for="Developer" class="form-control" />
+                <input asp-for="Developer" class="form-control"/>
                 <span asp-validation-for="Developer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Publisher" class="control-label"></label>
-                <input asp-for="Publisher" class="form-control" />
+                <input asp-for="Publisher" class="form-control"/>
                 <span asp-validation-for="Publisher" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control"/>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -58,11 +60,49 @@
                 <label asp-for="Public" class="form-check-label"></label>
                 <span asp-validation-for="Public" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-4">
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label>Genres</label>
+                <ul>
+                    @foreach (var genre in genres)
+                    {
+                        <li style="list-style: none">
+                            <input
+                                type="checkbox"
+                                name="Genres[]"
+                                id="genre-@genre.Id"
+                                checked="@(Model.Genres.Any(g => g.Id == genre.Id))"
+                                value="@genre.Id"
+                            />
+                            <label for="genre-@genre.Id">@genre.Name</label>
+                        </li>
+                    }
+                </ul>
             </div>
-        </form>
-    </div>
+            <div class="form-group">
+                <label>Platforms</label>
+                <ul>
+                    @foreach (var platform in platforms)
+                    {
+                        <li style="list-style: none">
+                            <input
+                                type="checkbox"
+                                name="Platforms[]"
+                                id="platform-@platform.Id"
+                                checked="@(Model.Platforms.Any(g => g.Id == platform.Id))"
+                                value="@platform.Id"
+                            />
+                            <label for="platform-@platform.Id">@platform.Name</label>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+        </div>
+    </form>
 </div>
 
 <div>
