@@ -15,24 +15,6 @@ public class PlatformsAdminController(ApplicationDbContext context) : Controller
         return View(await context.Platforms.ToListAsync());
     }
 
-    // GET: PlatformsAdmin/Details/5
-    public async Task<IActionResult> Details(long? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var platform = await context.Platforms
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (platform == null)
-        {
-            return NotFound();
-        }
-
-        return View(platform);
-    }
-
     // GET: PlatformsAdmin/Create
     public IActionResult Create()
     {
