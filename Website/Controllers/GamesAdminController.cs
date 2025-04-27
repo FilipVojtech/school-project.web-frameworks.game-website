@@ -36,8 +36,11 @@ public class GamesAdminController(ApplicationDbContext context) : Controller
     }
 
     // GET: GamesAdmin/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
+        ViewData["Platforms"] = await context.Platforms.AsNoTracking().ToListAsync();
+        ViewData["Genres"] = await context.Genres.AsNoTracking().ToListAsync();
+
         return View();
     }
 
