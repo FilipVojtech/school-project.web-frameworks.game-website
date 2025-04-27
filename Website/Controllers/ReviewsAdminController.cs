@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
 
 namespace Website.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ReviewsAdminController(ApplicationDbContext context) : Controller
 {
     // GET: ReviewsAdmin
