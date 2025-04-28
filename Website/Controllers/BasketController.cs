@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Website.Models;
 using Website.Models.ViewModels;
 using Website.Services;
 
@@ -7,9 +9,11 @@ namespace Website.Controllers;
 
 [Authorize]
 [Route("[controller]")]
-public class BasketController(IBasketService basketService) : Controller
+public class BasketController(IBasketService basketService, UserManager<User> userManager) : Controller
 {
     private readonly IBasketService _basket = basketService;
+
+    private readonly UserManager<User> _userManager = userManager;
 
     // GET
     [HttpGet]
@@ -42,9 +46,47 @@ public class BasketController(IBasketService basketService) : Controller
     }
 
     [HttpGet("Checkout")]
-    public IActionResult Checkout()
+    public async Task<IActionResult> Checkout()
     {
-        var userBasket = _basket.Basket;
-        return View();
+        var basket = _basket.Basket;
+        if (basket == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var emailAddress = await _userManager.GetEmailAsync((await _userManager.GetUserAsync(User))!);
+
+        return View(new CheckoutViewModel(basket, emailAddress!));
+    }
+
+    [HttpPost("Checkout")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Checkout(CheckoutViewModel model)
+    {
+        model.EmailAddress = (await _userManager.GetEmailAsync((await _userManager.GetUserAsync(User))!))!;
+        model.Basket = _basket.Basket!;
+
+        if (!ModelState.IsValid)
+        {
+            model.AcceptRefundPolicy = false;
+            return View(model);
+        }
+
+        var expMonth = (int)model.ExpMonth!;
+        var expYear = (int)model.ExpYear!;
+        var cardValidity = new DateTime(expYear, expMonth, DateTime.DaysInMonth(expYear, expMonth));
+        if (DateTime.Today > cardValidity.Date)
+        {
+            ModelState.AddModelError(string.Empty, "This card has expired, please choose a different one");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            model.AcceptRefundPolicy = false;
+            return View(model);
+        }
+
+        await _basket.CloseBasket();
+        return RedirectToAction(nameof(Index));
     }
 }
