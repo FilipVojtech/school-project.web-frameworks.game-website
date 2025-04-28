@@ -17,48 +17,60 @@ public class BasketService(
 
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    private async Task<Basket?> GetOrCreateBasket()
+    private Basket? _basket;
+
+    public Basket? Basket
     {
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
+        get
         {
-            return null;
-        }
-
-        var user = await _userManager.GetUserAsync(httpContext.User);
-        if (user == null)
-        {
-            return null;
-        }
-
-        var basket = await _context.Baskets
-            .Include(b => b.Items)
-            .ThenInclude(i => i.Game)
-            .FirstOrDefaultAsync(b => b.UserId == user.Id);
-
-        if (basket == null)
-        {
-            basket = new Basket { UserId = user.Id };
-            await _context.Baskets.AddAsync(basket);
-            if (await _context.SaveChangesAsync() == 0)
+            if (_basket != null)
             {
-                return null;
+                return _basket;
             }
-        }
 
-        return basket;
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null) return null;
+            var userId = _userManager.GetUserId(httpContext.User);
+            if (userId == null) return null;
+
+            var basket = _context.Baskets
+                .Include(b => b.Items)
+                .ThenInclude(i => i.Game)
+                .FirstOrDefault(b => b.UserId == userId);
+
+            if (basket == null)
+            {
+                basket = new Basket { UserId = userId };
+                _context.Baskets.Add(basket);
+                _context.SaveChanges();
+            }
+
+            return basket;
+        }
+        private set => _basket = value;
     }
 
-    public async Task<int> ProductCount()
+    public int ProductCount => Basket == null ? 0 : Basket.Items.Count;
+
+    public decimal TotalPrice => Basket?.TotalPrice() ?? 0;
+
+    public IList<BasketItem> Items
     {
-        var basket = await GetOrCreateBasket();
-        return basket == null ? 0 : basket.Items.Count;
+        get
+        {
+            IList<BasketItem> items = new List<BasketItem>();
+            if (Basket != null)
+            {
+                items = Basket.Items;
+            }
+
+            return items;
+        }
     }
 
     public async Task Add(long gameId)
     {
-        var basket = await GetOrCreateBasket();
-        if (basket == null) return;
+        if (Basket == null) return;
 
         var game = await _context.Games
             .AsNoTracking()
@@ -68,14 +80,14 @@ public class BasketService(
             return;
         }
 
-        var item = basket.Items.FirstOrDefault(i => i.GameId == gameId);
+        var item = Basket.Items.FirstOrDefault(i => i.GameId == gameId);
         if (item != null)
         {
             item.Count++;
         }
         else
         {
-            basket.Items.Add(new BasketItem
+            Basket.Items.Add(new BasketItem
             {
                 Game = game,
                 Count = 1,
@@ -87,15 +99,14 @@ public class BasketService(
 
     public async Task SetQuantity(int gameId, int quantity)
     {
-        var basket = await GetOrCreateBasket();
-        if (basket == null) return;
+        if (Basket == null) return;
 
-        var item = basket.Items.FirstOrDefault(i => i.GameId == gameId);
+        var item = Basket.Items.FirstOrDefault(i => i.GameId == gameId);
         if (item == null) return;
 
         if (quantity == 0)
         {
-            basket.Items.Remove(item);
+            Basket.Items.Remove(item);
         }
         else
         {
@@ -103,23 +114,5 @@ public class BasketService(
         }
 
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<IList<BasketItem>> Items()
-    {
-        IList<BasketItem> items = new List<BasketItem>();
-        var basket = await GetOrCreateBasket();
-        if (basket != null)
-        {
-            items = basket.Items;
-        }
-
-        return items;
-    }
-
-    public async Task<decimal> TotalPrice()
-    {
-        var basket = await GetOrCreateBasket();
-        return basket?.TotalPrice() ?? 0;
     }
 }

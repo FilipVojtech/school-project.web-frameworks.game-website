@@ -13,12 +13,12 @@ public class BasketController(IBasketService basketService) : Controller
 
     // GET
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         var model = new ViewBasketViewModel
         {
-            Items = await _basket.Items(),
-            TotalPrice = await _basket.TotalPrice()
+            Items = _basket.Items,
+            TotalPrice = _basket.TotalPrice
         };
         return View(model);
     }
@@ -42,8 +42,9 @@ public class BasketController(IBasketService basketService) : Controller
     }
 
     [HttpGet("Checkout")]
-    public async Task<IActionResult> Checkout()
+    public IActionResult Checkout()
     {
+        var userBasket = _basket.Basket;
         return View();
     }
 }

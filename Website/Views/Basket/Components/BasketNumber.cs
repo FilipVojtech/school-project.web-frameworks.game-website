@@ -17,8 +17,8 @@ public class BasketNumber(IBasketService basketService) : ViewComponent
 {
     private readonly IBasketService _basketService = basketService;
 
-    public async Task<IViewComponentResult> InvokeAsync()
+    public IViewComponentResult Invoke()
     {
-        return View(await _basketService.ProductCount());
+        return View(_basketService.ProductCount);
     }
 }

@@ -4,11 +4,25 @@ namespace Website.Services;
 
 public interface IBasketService
 {
+    Basket? Basket { get; }
+
     /// <summary>
     /// Get the count of products in the basket.
     /// </summary>
     /// <returns></returns>
-    Task<int> ProductCount();
+    int ProductCount { get; }
+
+    /// <summary>
+    /// Calculate the total price of the basket
+    /// </summary>
+    /// <returns>Total price of the basket or zero if no basket is assigned to the user</returns>
+    decimal TotalPrice { get; }
+
+    /// <summary>
+    /// Fetch items in currently in the basket.
+    /// </summary>
+    /// <returns>Promise that resolves in List of Basket Items.</returns>
+    IList<BasketItem> Items { get; }
 
     /// <summary>
     /// Add a game to a basket. Or increase its count.
@@ -23,16 +37,4 @@ public interface IBasketService
     /// <param name="gameId">The ID of the game which quantity should be updated.</param>
     /// <param name="quantity">The new quantity.</param>
     Task SetQuantity(int gameId, int quantity);
-
-    /// <summary>
-    /// Fetch items in currently in the basket.
-    /// </summary>
-    /// <returns>Promise that resolves in List of Basket Items.</returns>
-    Task<IList<BasketItem>> Items();
-
-    /// <summary>
-    /// Calculate the total price of the basket
-    /// </summary>
-    /// <returns>Total price of the basket or zero if no basket is assigned to the user</returns>
-    Task<decimal> TotalPrice();
 }
