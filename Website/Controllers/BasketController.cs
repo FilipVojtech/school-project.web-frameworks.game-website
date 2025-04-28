@@ -54,16 +54,16 @@ public class BasketController(IBasketService basketService, UserManager<User> us
             return RedirectToAction(nameof(Index));
         }
 
-        var emailAddress = await _userManager.GetEmailAsync((await _userManager.GetUserAsync(User))!);
+        var emailAddress = await GetEmailAsync();
 
-        return View(new CheckoutViewModel(basket, emailAddress!));
+        return View(new CheckoutViewModel(basket, emailAddress));
     }
 
     [HttpPost("Checkout")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Checkout(CheckoutViewModel model)
     {
-        model.EmailAddress = (await _userManager.GetEmailAsync((await _userManager.GetUserAsync(User))!))!;
+        model.EmailAddress = await GetEmailAsync();
         model.Basket = _basket.Basket!;
 
         if (!ModelState.IsValid)
@@ -88,5 +88,17 @@ public class BasketController(IBasketService basketService, UserManager<User> us
 
         await _basket.CloseBasket();
         return RedirectToAction(nameof(Index));
+    }
+
+    /// <summary>
+    /// Get current user's email
+    /// </summary>
+    /// <returns>Promise which resolves in current user's email</returns>
+    private async Task<string> GetEmailAsync()
+    {
+        // Able to use null-forgiving operator as the user will never be null
+        var user = await _userManager.GetUserAsync(User);
+        var email = await _userManager.GetEmailAsync(user!);
+        return email!;
     }
 }
