@@ -12,6 +12,7 @@ public class BasketController(IBasketService basketService) : Controller
     private readonly IBasketService _basket = basketService;
 
     // GET
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var model = new ViewBasketViewModel
@@ -38,5 +39,11 @@ public class BasketController(IBasketService basketService) : Controller
         var returnUrl = Request.GetTypedHeaders().Referer?.PathAndQuery ?? "/";
         await _basket.SetQuantity(gameId, quantity);
         return Redirect(returnUrl);
+    }
+
+    [HttpGet("Checkout")]
+    public async Task<IActionResult> Checkout()
+    {
+        return View();
     }
 }
