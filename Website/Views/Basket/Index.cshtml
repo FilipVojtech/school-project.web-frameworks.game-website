@@ -22,5 +22,9 @@
             <div>Total</div>
             <div>@Model.TotalPrice.ToString("F2")&nbsp;&euro;</div>
         </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <a asp-action="Checkout" class="btn btn-primary btn-lg">Check out</a>
+        </div>
     }
 </div>
