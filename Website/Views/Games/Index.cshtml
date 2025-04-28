@@ -25,10 +25,10 @@
             @if (!string.IsNullOrEmpty((string?)ViewData["CurrentFilter"]))
             {
                 <button type="button" class="btn btn-secondary" onclick="clearSearch()">
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-x-lg"></i><span class="visually-hidden">Clear Search</span>
                 </button>
             }
-            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i><span class="visually-hidden">Search</span></button>
         </div>
     </form>
 
