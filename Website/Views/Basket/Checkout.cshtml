@@ -1,8 +1,144 @@
-@model dynamic
+@model CheckoutViewModel
 
 @{
     ViewBag.Title = "Checkout";
     Layout = "_Layout";
 }
 
-<h2>Checkout</h2>
+<h2>Order Summary</h2>
+<div class="col">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Product ID</th>
+            <th scope="col">Product</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Total (Qty × Price)</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Basket.Items)
+        {
+            <tr>
+                <th scope="row">@item.GameId</th>
+                <td>@item.Game.Name</td>
+                <td>@($"{item.Game.Price:F2}€")</td>
+                <td>@item.Count</td>
+                <td>@($"{item.Game.Price * item.Count:F2}€")</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+        <tr>
+            <th scope="row">Total Price</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@($"{Model.Basket.TotalPrice():F2}€")</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+<form asp-action="Checkout" method="post">
+    <h2 class="mt-5">Payment Information</h2>
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="col">
+        <div class="form-floating mb-3">
+            <input asp-for="NameOnCard" class="form-control" placeholder=""/>
+            <label asp-for="NameOnCard"></label>
+            <span asp-validation-for="NameOnCard" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="form-floating mb-3">
+                    <input asp-for="CardNumber" class="form-control" placeholder=""/>
+                    <label asp-for="CardNumber"></label>
+                    <span asp-validation-for="CardNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form-floating mb-3">
+                    <input asp-for="SecurityCode" class="form-control" placeholder=""/>
+                    <label asp-for="SecurityCode"></label>
+                    <span asp-validation-for="SecurityCode" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-floating mb-3">
+                    <select asp-for="ExpMonth" class="form-select" id="expMonth"></select>
+                    <label asp-for="ExpMonth"></label>
+                    <span asp-validation-for="ExpMonth" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-floating mb-3">
+                    <select
+                        asp-for="ExpYear"
+                        asp-items="Model.ExpYearSelectList"
+                        class="form-select"
+                        onchange="generateMonths(this.value)"
+                    ></select>
+                    <label asp-for="ExpYear"></label>
+                    <span asp-validation-for="ExpYear" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-5">Delivery</h2>
+    <div class="col">
+        <p><span class="fw-bold">Product keys</span> will be delivered digitally via email to
+            <code>@Html.DisplayFor(m => m.EmailAddress)</code>.</p>
+    </div>
+
+    <div class="d-flex flex-column col-sm-5 mx-auto justify-content-center">
+        <div class="form-check mb-3 justify-content-center">
+            <input type="checkbox" asp-for="AcceptRefundPolicy" class="form-check-input">
+            <label asp-for="AcceptRefundPolicy" class="form-check-label">I acknowledge that digital keys are immediately
+                delivered after purchase and therefore are non-refundable.</label>
+            <span asp-validation-for="AcceptRefundPolicy" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Complete order</button>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        function generateMonths(selectedYear) {
+            /** @@type {HTMLOptionElement[]} */
+            const monthsOptions = [];
+            const today = new Date();
+            let currentMonthIndex;
+
+            if (today.getFullYear().toString() === selectedYear) {
+                currentMonthIndex = today.getMonth();
+            } else {
+                currentMonthIndex = 0;
+            }
+
+            for (let i = currentMonthIndex; i < 12; i++) {
+                const date = new Date(today.getFullYear(), i);
+                monthsOptions.push(new Option(
+                    date.toLocaleDateString("en", { month: "long" }),
+                    (i + 1).toString(),
+                    false,
+                    $("#expMonth").val() === (i + 1).toString(),
+                ));
+            }
+            monthsOptions.push(new Option("Invalid", "13"));
+
+            $("#expMonth").empty().append(...monthsOptions);
+        }
+
+        generateMonths(new Date().getFullYear().toString());
+    </script>
+}
