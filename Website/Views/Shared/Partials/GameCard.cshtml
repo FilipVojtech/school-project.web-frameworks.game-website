@@ -9,7 +9,12 @@
         </div>
         <div class="col d-flex flex-column">
             <div class="card-body">
-                <h5 class="card-title">@Model.Name</h5>
+                <h5 class="card-title">
+                    @Model.Name
+                    <div class="d-inline-flex gap-1 align-items-center text-body-secondary">
+                        <span>&bull;</span><span class="fs-6">@Model.Developer</span>
+                    </div>
+                </h5>
                 <div class="card-text">
                     <div class="game-card__genres">
                         @foreach (var genre in Model.Genres)
