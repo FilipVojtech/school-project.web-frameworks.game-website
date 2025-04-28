@@ -54,19 +54,7 @@ public class BasketService(
 
     public decimal TotalPrice => Basket?.TotalPrice() ?? 0;
 
-    public IList<BasketItem> Items
-    {
-        get
-        {
-            IList<BasketItem> items = new List<BasketItem>();
-            if (Basket != null)
-            {
-                items = Basket.Items;
-            }
-
-            return items;
-        }
-    }
+    public IList<BasketItem> Items => Basket?.Items ?? [];
 
     public async Task Add(long gameId)
     {
@@ -113,6 +101,23 @@ public class BasketService(
             item.Count = quantity;
         }
 
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task CloseBasket()
+    {
+        await EmptyBasket();
+    }
+
+    public async Task EmptyBasket()
+    {
+        if (Basket == null)
+        {
+            return;
+        }
+
+        _context.Attach(Basket);
+        _context.Items.RemoveRange(Basket.Items);
         await _context.SaveChangesAsync();
     }
 }

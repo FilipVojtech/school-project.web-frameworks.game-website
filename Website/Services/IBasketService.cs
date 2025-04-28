@@ -37,4 +37,16 @@ public interface IBasketService
     /// <param name="gameId">The ID of the game which quantity should be updated.</param>
     /// <param name="quantity">The new quantity.</param>
     Task SetQuantity(int gameId, int quantity);
+
+    /// <summary>
+    /// Closes a basket after it has been paid for
+    /// </summary>
+    /// <returns></returns>
+    Task CloseBasket();
+
+    /// <summary>
+    /// Empties the current basket
+    /// </summary>
+    /// <returns></returns>
+    Task EmptyBasket();
 }
