@@ -26,7 +26,8 @@ public class HomeController(
             .AsNoTracking()
             .OrderBy(r => r.CreatedAt)
             .Include(r => r.Game)
-            .Include(r => r.Author);
+            .Include(r => r.Author)
+            .OrderByDescending(r => r.CreatedAt);
 
         var homeVm = new HomeViewModel
         {
