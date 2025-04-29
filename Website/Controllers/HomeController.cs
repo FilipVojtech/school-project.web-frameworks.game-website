@@ -9,6 +9,7 @@ using Website.Models.ViewModels;
 
 namespace Website.Controllers;
 
+[Controller]
 public class HomeController(
     ApplicationDbContext context,
     RoleManager<IdentityRole> roleManager,
@@ -18,6 +19,7 @@ public class HomeController(
 
     private readonly UserManager<User> _userManager = userManager;
 
+    [HttpGet]
     public async Task<IActionResult> Index(int pageNumber = 1)
     {
         var reviews = context.Reviews
