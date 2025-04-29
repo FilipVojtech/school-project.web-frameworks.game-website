@@ -1,0 +1,20 @@
+@model Website.Models.Review
+
+@{
+    ViewData["Title"] = "Delete review";
+}
+
+<h2>Are you sure you want to delete the review?</h2>
+<div>
+    <partial
+        name="Partials/ReviewCard"
+        model="@Model"
+        view-data="@(new ViewDataDictionary(ViewData) { { "DisplayEditButtons", false } })"
+    />
+
+    <form asp-controller="Reviews" asp-action="DeleteConfirmed" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+        <input type="hidden" asp-for="Id"/>
+        <a href="@ViewData["ReturnUrl"]" class="btn btn-secondary">Cancel</a>
+        <input type="submit" value="Delete" class="btn btn-danger"/>
+    </form>
+</div>

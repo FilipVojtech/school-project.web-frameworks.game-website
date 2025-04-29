@@ -1,0 +1,30 @@
+@model ViewBasketViewModel
+@{
+    ViewData["Title"] = "Basket";
+}
+
+<div>
+    <h2>Your Basket</h2>
+    @if (Model.Items.Count == 0)
+    {
+        <h5>Your basket is empty</h5>
+    }
+    else
+    {
+        foreach (var item in Model.Items)
+        {
+            <partial name="Partials/BasketItemCard" model="item"/>
+        }
+
+        <hr>
+
+        <div class="fs-4 d-flex justify-content-between">
+            <div>Total</div>
+            <div>@Model.TotalPrice.ToString("F2")&nbsp;&euro;</div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <a asp-action="Checkout" class="btn btn-primary btn-lg">Check out</a>
+        </div>
+    }
+</div>

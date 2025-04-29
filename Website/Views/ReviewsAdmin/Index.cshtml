@@ -1,0 +1,65 @@
+@model IEnumerable<Website.Models.Review>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Reviews</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Author)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Body)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <th>
+                @if (item.Author != null)
+                {
+                    @Html.DisplayFor(modelItem => item.Author.UserName)
+                }
+                else
+                {
+                    <span>Deleted user</span>
+                }
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Body)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                <div class="d-flex gap-2 fs-5">
+                    <a
+                        asp-action="Details"
+                        asp-route-id="@item.Id"
+                    ><i class="bi bi-info-circle"></i><span class="visually-hidden">Details</span></a>
+                    <a
+                        asp-action="Delete"
+                        asp-route-id="@item.Id"
+                    ><i class="bi bi-x-circle text-danger"></i><span class="visually-hidden">Delete</span></a>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

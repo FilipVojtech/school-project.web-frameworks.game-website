@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Website.Data;
+using Website.Models;
+using Website.Services;
 
 namespace Website;
 
@@ -15,11 +17,64 @@ public class Program
                                throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        }
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddControllersWithViews();
+
+        builder.Services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
+                                   ?? throw new InvalidOperationException("Could not find Google Client ID");
+                options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
+                                       ?? throw new InvalidOperationException("Could not find Google Client Secret");
+            })
+            .AddFacebook(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:Facebook:AppId"]
+                                   ?? throw new InvalidOperationException("Could not find Facebook App ID");
+                options.ClientSecret = builder.Configuration["Authentication:Facebook:AppSecret"]
+                                       ?? throw new InvalidOperationException("Could not find Facebook App Secret");
+            })
+            .AddTwitter(options =>
+            {
+                options.ConsumerKey = builder.Configuration["Authentication:Twitter:ConsumerAPIKey"]
+                                      ?? throw new InvalidOperationException("Could not find Twitter Consumer Key");
+                options.ConsumerSecret = builder.Configuration["Authentication:Twitter:ConsumerSecret"]
+                                         ?? throw new InvalidOperationException("Could not find Twitter Consumer Secret");
+            });
+
+        var mvcBuilder = builder.Services
+            .AddControllersWithViews()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler =
+                    System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            });
+        builder.Services.AddHttpContextAccessor();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            mvcBuilder.AddRazorRuntimeCompilation();
+        }
+
+        // IGDB Client
+        // builder.Services.AddSingleton<IGDBClient>(_ =>
+        // {
+        //     var clientId = builder.Configuration["twitch:clientId"] ??
+        //                    throw new InvalidOperationException("Could not get Twitch Client ID.");
+        //     var clientSecret = builder.Configuration["twitch:clientSecret"] ??
+        //                        throw new InvalidOperationException("Could not get Twitch Client Secret");
+        //     return new IGDBClient(clientId, clientSecret);
+        // });
+
+        builder.Services.AddScoped<IBasketService, BasketService>();
+        builder.Services.AddScoped<IGenreService, GenreService>();
 
         var app = builder.Build();
 
@@ -45,6 +100,9 @@ public class Program
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
             .WithStaticAssets();
+        app.MapControllerRoute(
+            name: "api",
+            pattern: "api/{controller}");
         app.MapRazorPages()
             .WithStaticAssets();
 

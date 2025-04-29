@@ -1,26 +1,70 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Website.Data;
+using Website.Helpers;
 using Website.Models;
+using Website.Models.ViewModels;
 
 namespace Website.Controllers;
 
-public class HomeController : Controller
+[Controller]
+public class HomeController(
+    ApplicationDbContext context,
+    RoleManager<IdentityRole> roleManager,
+    UserManager<User> userManager) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly UserManager<User> _userManager = userManager;
 
-    public IActionResult Index()
+    [HttpGet]
+    public async Task<IActionResult> Index(int pageNumber = 1)
     {
-        return View();
+        var reviews = context.Reviews
+            .AsNoTracking()
+            .OrderBy(r => r.CreatedAt)
+            .Include(r => r.Game)
+            .Include(r => r.Author)
+            .OrderByDescending(r => r.CreatedAt);
+
+        var homeVm = new HomeViewModel
+        {
+            Reviews = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 50),
+        };
+
+        return View(homeVm);
     }
 
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    /// <summary>
+    /// Creates an admin role (if it isn't already) and assigns it to a user specified by a constant within the function.
+    /// Doesn't accept any input from the user so it doesn't pose a security threat.
+    /// </summary>
+    public async Task<IActionResult> CreateRolesAndUser()
+    {
+        const string adminUserEmail = "";
+        var adminExists = await _roleManager.RoleExistsAsync("Admin");
+        if (!adminExists)
+        {
+            await _roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
+        var user = await _userManager.FindByEmailAsync(adminUserEmail);
+        if (user != null)
+        {
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

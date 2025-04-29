@@ -1,0 +1,151 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@model ViewGame
+
+@{
+    ViewData["Title"] = Model.Game.Name;
+}
+
+<div>
+    <div id="game-section" class="d-flex flex-column flex-md-row flex-nowrap">
+        <img
+            id="cover"
+            class="col-4 rounded-2 align-self-center"
+            src="@Model.Game.ImageUrl"
+            alt="@Model.Game.Name cover art"
+        >
+        <div id="content" class="ms-md-2 mt-2 mt-md-0 col-md-8 bg-body-secondary rounded-2 p-3 d-flex flex-column">
+            <h5>
+                @if (Model.AverageRating != null)
+                {
+                    @($"Avg. {Model.AverageRating:F2}/10")
+                    <span class="text-body-tertiary">(@Model.ReviewCount @(Model.ReviewCount > 1 ? "reviews" : "review"))</span>
+                }
+                else
+                {
+                    <span class="text-body-tertiary">No ratings</span>
+                }
+            </h5>
+            <h2>@Model.Game.Name</h2>
+            <div class="d-flex gap-2 fs-5">
+                @if (Model.Game.Developer != null)
+                {
+                    <span>@Model.Game.Developer</span>
+                }
+                @if (Model.Game.Developer != null && Model.Game.Publisher != null)
+                {
+                    <span>-</span>
+                }
+                @if (Model.Game.Publisher != null)
+                {
+                    <span>Published by @Model.Game.Publisher</span>
+                }
+            </div>
+            @if (Model.Game.Description != null)
+            {
+                <p class="mt-4 col-10">@Model.Game.Description</p>
+            }
+            <div class="spacer flex-grow-1"></div>
+            <div class="d-flex gap-3 align-items-center">
+                <span class="fs-4">@Model.Game.Price.ToString("F2")&nbsp;&euro;</span>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-controller="Basket" asp-action="AddToBasket" method="post">
+                        <input type="hidden" name="gameId" value="@Model.Game.Id">
+                        <button type="submit" class="btn btn btn-primary">
+                            <i class="bi bi-basket2-fill"></i>
+                            Add to basket
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary" disabled>
+                        Sign in to buy
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+    <div id="reviews-section" class="mt-4">
+        <h3>Reviews</h3>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <partial name="Partials/ReviewForm" model="Model.AddReviewModel"/>
+        }
+        else
+        {
+            <div class="text-center border bg-light rounded p-3 mb-2">
+                <span class="fs-5 fw-bold">Want to add your review?</span>
+                <p class="mb-0">
+                    You can <a asp-area="Identity" asp-page="/Account/Login">log in</a> or
+                    <a asp-area="Identity" asp-page="/Account/Register">register</a> to do so
+                </p>
+            </div>
+        }
+        @if (Model.Reviews.Count > 0)
+        {
+            foreach (var review in Model.Reviews)
+            {
+                <partial
+                    name="Partials/ReviewCard"
+                    model="review"
+                    view-data="@(new ViewDataDictionary(this.ViewData) { { "displayGame", false } })"
+                />
+            }
+
+            @*Pagination*@
+            if (Model.Reviews.TotalPages > 1)
+            {
+                var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+
+                <nav aria-label="Games results pages">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a
+                                asp-action="ViewGame"
+                                asp-route-pageNumber="@(Model.Reviews.PageIndex - 1)"
+                                asp-route-id="@Model.Game.Id"
+                                class="page-link @prevDisabled"
+                            >
+                                Previous
+                            </a>
+                        </li>
+                        @for (var i = 1; i <= Model.Reviews.TotalPages; i++)
+                        {
+                            var active = i == Model.Reviews.PageIndex ? "active" : "";
+                            <li class="page-item">
+                                <a
+                                    asp-action="ViewGame"
+                                    asp-route-pageNumber="@i"
+                                    asp-route-id="@Model.Game.Id"
+                                    class="page-link @active"
+                                >
+                                    @i
+                                </a>
+                            </li>
+                        }
+                        <li class="page-item">
+                            <a
+                                asp-action="ViewGame"
+                                asp-route-id="@Model.Game.Id"
+                                asp-route-pageNumber="@(Model.Reviews.PageIndex + 1)"
+                                class="page-link @nextDisabled"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        else
+        {
+            <div class="text-center my-4">
+                <h4>No reviews yet</h4>
+                <p>Have you played this game? Be the first to write a review!</p>
+            </div>
+        }
+    </div>
+</div>

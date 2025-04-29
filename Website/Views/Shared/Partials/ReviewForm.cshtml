@@ -1,0 +1,29 @@
+@model AddReviewModel
+
+<form asp-controller="Games" asp-action="PostReview" method="post" asp-route-id="@Model.GameId" class="card w-100 mb-2">
+    @Html.HiddenFor(m => m.GameId, new { value = Model.GameId })
+    <div class="card-header">
+        <div>
+            <i class="bi bi-person-circle"></i>
+            You
+        </div>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating mb-2">
+            <input asp-for="Title" class="form-control" placeholder=""/>
+            <label asp-for="Title">Title <span class="text-body-tertiary">(optional)</span></label>
+        </div>
+        <div class="form-floating">
+            <textarea asp-for="Body" class="form-control" placeholder="" style="height: 8rem;"></textarea>
+            <label asp-for="Body">Your Review</label>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <div class="input-group input-group-lg w-auto">
+            @Html.DropDownListFor(m => m.Rating, Model.RatingItems, null, new { @class = "form-select", style = "flex: unset; flex-basis: min-content" })
+            <span class="input-group-text">/ 10</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Post review</button>
+    </div>
+</form>

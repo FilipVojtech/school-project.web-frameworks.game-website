@@ -1,0 +1,76 @@
+@model Review
+@inject UserManager<User> UserManager
+@using Microsoft.AspNetCore.Identity
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var displayGame = (bool?)ViewData["displayGame"] ?? true;
+    var displayEditButtons = user != null && Model.Author?.Id == user.Id;
+    displayEditButtons = (bool?)ViewData["DisplayEditButtons"] ?? displayEditButtons;
+}
+
+<div class="card w-100 mb-2">
+    <div class="card-header d-flex justify-content-between">
+        <div>
+            @if (displayGame)
+            {
+                <a
+                    asp-controller="Games"
+                    asp-action="ViewGame"
+                    asp-route-id="@Model.Game.Id"
+                    class="link-underline link-underline-opacity-0 text-body"
+                >
+                    @Model.Game.Name
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            }
+            <div>
+                <i class="bi bi-person-circle"></i>
+                @(Model.Author?.UserName ?? "[Deleted User]")
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+            @if (DateTime.Today.Date != Model.CreatedAt.Date)
+            {
+                <span>@Model.CreatedAt.ToShortDateString()</span>
+            }
+            <span>@Model.CreatedAt.ToShortTimeString()</span>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(Model.Title))
+        {
+            <h5 class="card-title">@Model.Title</h5>
+        }
+        <div class="col-12">
+            <pre class="card-text" style="font-family: var(--bs-body-font-family); font-size: 1rem; text-wrap: wrap">@Model.Body</pre>
+        </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <div class="fs-5">
+            @Model.Rating/10
+        </div>
+        @if (displayEditButtons)
+        {
+            <div>
+                <a
+                    asp-controller="Reviews"
+                    asp-action="Edit"
+                    asp-route-reviewId="@Model.Id"
+                    class="btn btn-outline-primary"
+                >
+                    <i class="bi bi-pencil-square"></i>
+                    <span class="visually-hidden">Edit Review</span>
+                </a>
+                <a
+                    asp-controller="Reviews"
+                    asp-action="Delete"
+                    asp-route-id="@Model.Id"
+                    class="btn btn-outline-danger"
+                >
+                    <i class="bi bi-trash-fill"></i>
+                    <span class="visually-hidden">Delete Review</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

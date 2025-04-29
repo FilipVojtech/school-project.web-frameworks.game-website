@@ -1,0 +1,53 @@
+@inject SignInManager<User> SignInManager
+@using Microsoft.AspNetCore.Identity
+@model Game
+
+<div class="game-card card w-100 mb-2">
+    <div class="row flex-nowrap g-0">
+        <div class="col col-auto">
+            <img src="@Model.ImageUrl" alt="@Model.Name cover art" class="game-card__image rounded-start">
+        </div>
+        <div class="col d-flex flex-column">
+            <div class="card-body">
+                <h5 class="card-title">
+                    @Model.Name
+                    <div class="d-inline-flex gap-1 align-items-center text-body-secondary">
+                        <span>&bull;</span><span class="fs-6">@Model.Developer</span>
+                    </div>
+                </h5>
+                <div class="card-text">
+                    <div class="game-card__genres">
+                        @foreach (var genre in Model.Genres)
+                        {
+                            <div>@genre.Name</div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <div id="game-card__footer-start">
+
+                </div>
+                <div id="game-card__footer-end" class="d-flex align-items-center gap-3">
+                    <span class="fs-4">@Model.Price.ToString("F2")&nbsp;&euro;</span>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <form asp-controller="Basket" asp-action="AddToBasket" method="post">
+                            <input type="hidden" name="gameId" value="@Model.Id">
+                            <button type="submit" class="btn btn btn-primary">
+                                <i class="bi bi-basket2-fill"></i>
+                                Add to basket
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary" disabled>
+                            Sign in to buy
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
