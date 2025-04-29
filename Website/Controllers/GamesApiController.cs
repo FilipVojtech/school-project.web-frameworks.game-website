@@ -17,7 +17,7 @@ public class GamesApiController(ApplicationDbContext context) : Controller
             .Include(g => g.Genres)
             .Include(g => g.Platforms)
             .AsNoTracking();
-        var results = await PaginatedList<Game>.CreateAsync(games, page, 2);
+        var results = await PaginatedList<Game>.CreateAsync(games, page, 20);
         return Ok(results.ToList());
     }
 }
