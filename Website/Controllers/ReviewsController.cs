@@ -26,10 +26,12 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
     {
         var user = (await _userManager.GetUserAsync(User))!;
         var reviews = _context.Reviews
+            .AsNoTracking()
             .Include(r => r.Author)
             .Include(r => r.Game)
             .Where(r => r.Author == user)
-            .AsNoTracking();
+            .OrderBy(r => r.CreatedAt);
+
         var list = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 20);
         return View(list);
     }
