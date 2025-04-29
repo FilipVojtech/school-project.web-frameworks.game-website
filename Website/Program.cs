@@ -49,7 +49,13 @@ public class Program
                                          ?? throw new InvalidOperationException("Could not find Twitter Consumer Secret");
             });
 
-        var mvcBuilder = builder.Services.AddControllersWithViews();
+        var mvcBuilder = builder.Services
+            .AddControllersWithViews()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler =
+                    System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            });
         builder.Services.AddHttpContextAccessor();
 
         if (builder.Environment.IsDevelopment())
@@ -94,6 +100,9 @@ public class Program
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
             .WithStaticAssets();
+        app.MapControllerRoute(
+            name: "api",
+            pattern: "api/{controller}");
         app.MapRazorPages()
             .WithStaticAssets();
 
