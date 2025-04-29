@@ -30,7 +30,7 @@ public class ReviewsController(ApplicationDbContext context, UserManager<User> u
             .Include(r => r.Author)
             .Include(r => r.Game)
             .Where(r => r.Author == user)
-            .OrderBy(r => r.CreatedAt);
+            .OrderByDescending(r => r.CreatedAt);
 
         var list = await PaginatedList<Review>.CreateAsync(reviews, pageNumber, 20);
         return View(list);

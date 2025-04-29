@@ -91,7 +91,8 @@ public class GamesController(ApplicationDbContext context, UserManager<User> use
         var reviews = _context.Reviews
             .AsNoTracking()
             .Include(r => r.Author)
-            .Where(r => r.Game == game);
+            .Where(r => r.Game == game)
+            .OrderByDescending(r => r.CreatedAt);
 
         model.ReviewCount = await reviews.CountAsync();
         if (model.ReviewCount > 0)
