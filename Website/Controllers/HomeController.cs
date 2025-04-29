@@ -42,6 +42,10 @@ public class HomeController(
         return View();
     }
 
+    /// <summary>
+    /// Creates an admin role (if it isn't already) and assigns it to a user specified by a constant within the function.
+    /// Doesn't accept any input from the user so it doesn't pose a security threat.
+    /// </summary>
     public async Task<IActionResult> CreateRolesAndUser()
     {
         const string adminUserEmail = "";
